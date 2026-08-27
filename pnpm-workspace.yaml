@@ -1,0 +1,24 @@
+# Define qué carpetas son "paquetes" del monorepo para pnpm.
+# apps/backend       -> API + Admin de Medusa v2
+# apps/storefront     -> tienda Next.js (Fase 7)
+# apps/mock-bind       -> simulador local de Bind ERP (Fase 2)
+# apps/mock-skydropx  -> simulador local de Skydropx (Fase 2)
+# apps/mock-cfdi      -> simulador local del PAC de CFDI (Fase 2)
+packages:
+  - "apps/*"
+# Paquetes con scripts de instalación (postinstall) que pnpm bloquea por
+# seguridad hasta aprobarlos explícitamente. Los 5 son dependencias directas
+# o transitivas de Medusa/su tooling (binarios nativos de swc/esbuild/msgpackr,
+# codegen de protobufjs, telemetría opcional de Medusa) - se aprueban en true.
+allowBuilds:
+  '@medusajs/telemetry': true
+  '@swc/core': true
+  esbuild: true
+  msgpackr-extract: true
+  protobufjs: true
+  # sharp: procesamiento de imágenes usado por la optimización de
+  # imágenes de Next.js. unrs-resolver: resolución de módulos nativa usada
+  # por herramientas de lint/build. Ambos son dependencias conocidas del
+  # storefront Next.js (Fase 4), no de terceros oscuros.
+  sharp: true
+  unrs-resolver: true

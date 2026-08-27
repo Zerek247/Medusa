@@ -1,0 +1,120 @@
+// Catálogo de la DEMO (Fase 6B) -- 8 productos para mostrarle a un cliente
+// potencial. Placeholder con datos realistas mientras llegan los reales
+// (nombre, descripción, precio, foto) -- reemplaza cada campo aquí mismo,
+// no hace falta tocar el script que lee este archivo
+// (apps/backend/src/seed/seed-demo.ts).
+//
+// "imagen" queda en null a propósito: cuando tengas las fotos, ponlas en
+// apps/backend/src/seed/imagenes/ y cambia el valor a esa ruta (o a una
+// URL si las vas a alojar aparte) -- el script las sube como thumbnail del
+// producto.
+//
+// "categoria" debe ser EXACTAMENTE el nombre de una categoría que ya
+// existe (ver crear-categorias.ts) -- si pones una que no existe, el
+// script la reporta y no crea ese producto, no falla todos los demás.
+[
+  {
+    "sku": "DEMO-001",
+    "nombre": "Monitor de signos vitales portátil",
+    "descripcion": "Monitoreo de SpO2, frecuencia cardiaca y presión arterial no invasiva, pantalla a color de 8 pulgadas, batería de hasta 4 horas.",
+    "precio": 18500.0,
+    "existencia": 6,
+    "categoria": "Diagnóstico y monitoreo",
+    "peso_kg": 2.8,
+    "largo_cm": 30,
+    "ancho_cm": 22,
+    "alto_cm": 12,
+    "imagen": null
+  },
+  {
+    "sku": "DEMO-002",
+    "nombre": "Desfibrilador (DEA) automático externo",
+    "descripcion": "Guía de voz en español, análisis automático de ritmo cardiaco, incluye electrodos adulto y estuche de transporte.",
+    "precio": 32000.0,
+    "existencia": 3,
+    "categoria": "Diagnóstico y monitoreo",
+    "peso_kg": 3.1,
+    "largo_cm": 29,
+    "ancho_cm": 25,
+    "alto_cm": 10,
+    "imagen": null
+  },
+  {
+    "sku": "DEMO-003",
+    "nombre": "Concentrador de oxígeno 10L de uso continuo",
+    "descripcion": "Para uso domiciliario, doble salida de flujo, humidificador incluido, ruedas para traslado dentro del consultorio.",
+    "precio": 24500.0,
+    "existencia": 4,
+    "categoria": "Oxigenoterapia",
+    "peso_kg": 23.5,
+    "largo_cm": 40,
+    "ancho_cm": 33,
+    "alto_cm": 58,
+    "imagen": null
+  },
+  {
+    "sku": "DEMO-004",
+    "nombre": "Ventilador de transporte portátil",
+    "descripcion": "Modos de ventilación asistida/controlada, batería interna de respaldo, pantalla táctil, ideal para traslado de pacientes.",
+    "precio": 68000.0,
+    "existencia": 2,
+    "categoria": "Oxigenoterapia",
+    "peso_kg": 5.4,
+    "largo_cm": 35,
+    "ancho_cm": 28,
+    "alto_cm": 18,
+    "imagen": null
+  },
+  {
+    "sku": "DEMO-005",
+    "nombre": "Nebulizador ultrasónico de uso hospitalario",
+    "descripcion": "Partícula ultrafina, tanque de 500ml, temporizador programable, para uso continuo en consultorio.",
+    "precio": 4200.0,
+    "existencia": 12,
+    "categoria": "Terapia respiratoria",
+    "peso_kg": 1.6,
+    "largo_cm": 24,
+    "ancho_cm": 18,
+    "alto_cm": 16,
+    "imagen": null
+  },
+  {
+    "sku": "DEMO-006",
+    "nombre": "Báscula clínica digital con estadímetro integrado",
+    "descripcion": "Capacidad 250kg, precisión de 100g, estadímetro hasta 200cm, pantalla digital de fácil lectura.",
+    "precio": 9800.0,
+    "existencia": 5,
+    "categoria": "Básculas y antropometría",
+    "peso_kg": 19.0,
+    "largo_cm": 55,
+    "ancho_cm": 50,
+    "alto_cm": 195,
+    "imagen": null
+  },
+  {
+    "sku": "DEMO-007",
+    "nombre": "Kit de diagnóstico (otoscopio + oftalmoscopio)",
+    "descripcion": "Set completo con mango recargable, cabezales de otoscopio y oftalmoscopio, estuche rígido de transporte.",
+    "precio": 6900.0,
+    "existencia": 8,
+    "categoria": "Diagnóstico y monitoreo",
+    "peso_kg": 0.9,
+    "largo_cm": 25,
+    "ancho_cm": 18,
+    "alto_cm": 8,
+    "imagen": null
+  },
+  {
+    "sku": "DEMO-008",
+    "nombre": "Silla de ruedas plegable de aluminio",
+    "descripcion": "Estructura de aluminio ligero, reposapiés desmontables, frenos de seguridad, plegable para transporte.",
+    "precio": 4500.0,
+    "existencia": 7,
+    "categoria": "Básculas y antropometría",
+    "peso_kg": 14.0,
+    "largo_cm": 105,
+    "ancho_cm": 65,
+    "alto_cm": 90,
+    "imagen": null
+  }
+]

@@ -1,0 +1,12 @@
+# Imagen de DESARROLLO del mock de Skydropx. Mismo patrón que
+# apps/backend/Dockerfile.dev: se construye desde la raíz del monorepo para
+# que pnpm pueda resolver el workspace completo.
+FROM node:24-alpine
+
+RUN corepack enable
+WORKDIR /app
+COPY . .
+RUN pnpm install --frozen-lockfile
+
+EXPOSE 4002
+CMD ["sh", "-c", "cd apps/mock-skydropx && pnpm dev"]

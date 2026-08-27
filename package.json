@@ -1,0 +1,10 @@
+{
+  "name": "medusa-ecommerce-prototype",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Prototipo local de e-commerce con Medusa v2 para equipo medico, con mocks de Bind ERP, Skydropx y CFDI. Solo para aprendizaje, no es produccion.",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "packageManager": "pnpm@11.22.0"
+}

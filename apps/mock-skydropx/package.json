@@ -1,0 +1,14 @@
+{
+  "name": "mock-skydropx",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Simulador local del agregador de paqueterias Skydropx: cotizacion y generacion de guias.",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

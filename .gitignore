@@ -1,0 +1,41 @@
+# Dependencias
+node_modules/
+.pnpm-store/
+
+# Medusa
+.medusa/
+apps/backend/.medusa/
+apps/backend/uploads/
+apps/backend/dist/
+
+# Next.js
+apps/storefront/.next/
+apps/storefront/out/
+apps/mockup/.next/
+apps/mockup/out/
+
+# Variables de entorno (nunca versionar credenciales, ni siquiera de prueba)
+.env
+.env.local
+apps/**/.env
+apps/**/.env.local
+!apps/**/.env.example
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Volúmenes/datos locales de Docker si se montan a disco
+docker-data/
+
+# Fase 5: mock de correo -- escribe los "correos enviados" como archivos de
+# texto en vez de mandarlos de verdad. Viven dentro de apps/backend/.medusa/
+# (ya cubierto por la regla .medusa/ de arriba) a propósito -- ver el
+# comentario en apps/backend/src/lib/mock-correo.ts.

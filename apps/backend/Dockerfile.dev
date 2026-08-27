@@ -1,0 +1,30 @@
+# Imagen de DESARROLLO del backend de Medusa v2.
+# No está pensada para producción (no hay build multi-stage ni usuario no-root
+# optimizado): el objetivo es levantar `medusa develop` con hot-reload dentro
+# de Docker para el prototipo.
+FROM node:24-alpine
+
+# corepack viene incluido con Node y nos da pnpm sin instalar nada aparte,
+# igual que hicimos en el host.
+RUN corepack enable
+
+WORKDIR /app
+
+# Copiamos TODO el monorepo. Para un prototipo de aprendizaje no vale la pena
+# optimizar el cacheo de capas de Docker separando manifiestos del resto del
+# código; lo priorizamos si esto migrara a una imagen de producción.
+COPY . .
+
+# Se instala para todo el workspace pnpm (backend + lo que se agregue en
+# fases futuras: mocks, storefront), generando node_modules "frescos" para
+# Linux dentro del contenedor.
+RUN pnpm install --frozen-lockfile
+
+EXPOSE 9000
+
+# Se sobreescribe desde docker-compose.yml; esto es solo un valor por
+# defecto si el contenedor se corre suelto. Importante correr "pnpm dev"
+# DESDE apps/backend (no "pnpm --filter backend dev" desde la raíz): ver
+# el comentario en docker-compose.yml sobre INIT_CWD y el módulo de i18n
+# del dashboard de admin.
+CMD ["sh", "-c", "cd apps/backend && pnpm dev"]

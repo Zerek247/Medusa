@@ -1,0 +1,12 @@
+# Imagen de DESARROLLO del storefront (Next.js con Turbopack). Mismo
+# patrón que apps/backend/Dockerfile.dev: build desde la raíz del monorepo
+# para que pnpm resuelva el workspace completo.
+FROM node:24-alpine
+
+RUN corepack enable
+WORKDIR /app
+COPY . .
+RUN pnpm install --frozen-lockfile
+
+EXPOSE 8000
+CMD ["sh", "-c", "cd apps/storefront && pnpm dev"]

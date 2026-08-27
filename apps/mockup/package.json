@@ -1,0 +1,26 @@
+{
+  "name": "mockup",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Maqueta visual de BioBackup (tienda + panel de admin) -- SIN backend real, todos los datos son fijos en el código. Solo para mostrarle a un cliente cómo se vería el sistema. El proyecto de verdad está en apps/backend + apps/storefront.",
+  "scripts": {
+    "dev": "next dev -p 3100",
+    "build": "next build",
+    "start": "next start -p ${PORT:-3100}",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "15.5.21",
+    "react": "19.0.5",
+    "react-dom": "19.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "20.19.43",
+    "@types/react": "19.0.5",
+    "@types/react-dom": "19.0.5",
+    "autoprefixer": "^10.4.2",
+    "postcss": "^8.4.8",
+    "tailwindcss": "^3.4.14",
+    "typescript": "^5.3.2"
+  }
+}

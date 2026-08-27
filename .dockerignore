@@ -1,0 +1,17 @@
+# Nunca copiamos node_modules al build: se instala DENTRO del contenedor.
+# Si lo copiáramos, arrastraríamos binarios nativos compilados para Windows
+# (swc, esbuild, etc.) que no funcionan en el Linux del contenedor.
+node_modules
+**/node_modules
+
+.git
+.gitignore
+
+apps/backend/.medusa
+apps/backend/dist
+apps/backend/uploads
+
+apps/storefront/.next
+apps/storefront/out
+
+*.log

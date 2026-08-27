@@ -1,0 +1,224 @@
+# Orquestación local del prototipo.
+# Fase 1: Postgres + Redis + backend de Medusa.
+# Fase 2: + mocks de Bind ERP, Skydropx y CFDI (simulan los 3 sistemas
+# externos reales del negocio). El storefront se agrega en Fase 7.
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: medusa-postgres
+    environment:
+      POSTGRES_USER: medusa
+      POSTGRES_PASSWORD: medusa_dev_password
+      POSTGRES_DB: medusa_store
+    ports:
+      # Expuesto también al host (no solo a la red interna de Docker) para
+      # poder conectarte con un cliente SQL local (DBeaver, TablePlus, etc.)
+      # mientras aprendes/depuras. En un entorno real esto no se expondría.
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medusa -d medusa_store"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: medusa-redis
+    ports:
+      - "6379:6379"
+    # --appendonly yes activa persistencia (AOF): sin esto, Redis en Docker
+    # es puramente en memoria y pierdes colas/eventos pendientes cada vez
+    # que el contenedor se reinicia.
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile.dev
+    container_name: medusa-backend
+    env_file:
+      - apps/backend/.env
+    environment:
+      # pnpm a veces necesita purgar node_modules cuando el lockfile
+      # cambió mucho (por ejemplo al agregar el storefront) y, sin
+      # terminal interactiva, aborta con
+      # ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY en vez de preguntar.
+      # CI=true es la señal que pnpm reconoce para "no hay nadie para
+      # preguntarle, procede" -- confirmModulesPurge=false en .npmrc NO
+      # bastó para la revisión interna de dependencias de `medusa develop`.
+      CI: "true"
+    ports:
+      - "9000:9000"
+      # HMR de Vite para el dashboard de admin (ver comentario en medusa-config.ts)
+      - "5173:5173"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      # Montamos el monorepo completo para hot-reload al editar código...
+      - .:/app
+      # ...pero protegemos node_modules del bind mount con volúmenes anónimos,
+      # para que no se tape lo que `pnpm install` generó DENTRO del
+      # contenedor (para Linux) con lo que hay en el host (para Windows).
+      - /app/node_modules
+      - /app/apps/backend/node_modules
+    # OJO: corremos "cd apps/backend && pnpm dev" (no "pnpm --filter backend dev"
+    # desde la raíz). Con --filter, pnpm deja INIT_CWD apuntando a la raíz del
+    # monorepo; el generador de módulos de i18n del dashboard de admin usa esa
+    # variable para calcular rutas de archivo y termina construyendo una ruta
+    # sin el prefijo /app/apps/backend, rompiendo la carga del panel de admin
+    # (pantalla en blanco). Entrando al paquete primero, cwd/INIT_CWD coinciden
+    # con la ubicación real del backend y el cálculo de rutas queda bien.
+    command: sh -c "cd apps/backend && pnpm dev"
+
+  # --- Worker (Fase 3) ---
+  # Mismo código, misma imagen que "backend" -- literalmente el mismo
+  # apps/backend/Dockerfile.dev -- pero arrancado con WORKER_MODE=worker en
+  # vez de "server". Es EL patrón oficial de Medusa v2 para esto (ver
+  # https://docs.medusajs.com/learn/production/worker-mode), no algo que
+  # inventamos: Medusa distingue "server" (atiende HTTP) de "worker" (corre
+  # scheduled jobs, subscribers y workflows en segundo plano) precisamente
+  # para poder separarlos en dos procesos.
+  #
+  # Por qué esto va en su PROPIO contenedor y no adentro de "backend":
+  #
+  # 1. Un solo lugar donde corre cada scheduled job. Si "backend" también
+  #    corriera el cron de sync (modo "shared") y el día de mañana
+  #    escalas el backend a 3 réplicas para aguantar más tráfico HTTP del
+  #    storefront, tendrías el sync de Bind disparándose 3 veces cada 15
+  #    minutos -- 3 llamadas simultáneas al ERP (le pegas a su rate limit
+  #    más rápido) y una carrera por escribir el mismo producto en Medusa
+  #    desde 3 procesos a la vez. Separar server/worker hace que el número
+  #    de "servidores HTTP" y el número de "workers de background" sean
+  #    perillas independientes.
+  #
+  # 2. Aislamiento de fallas y de recursos. Si el sync se cuelga esperando
+  #    respuesta de un Bind ERP lento, o revienta con un error, eso pasa en
+  #    el proceso del worker -- el checkout y el panel de admin (que corren
+  #    en "backend") ni se enteran. Al revés también: si el admin recibe
+  #    una ráfaga de tráfico, no le roba CPU/memoria al proceso que está
+  #    sincronizando 60+ productos.
+  #
+  # 3. Desplegar y reiniciar por separado. Puedes reiniciar el worker
+  #    (por ejemplo, para cambiar BIND_SYNC_CRON) sin tumbar ninguna
+  #    conexión HTTP activa al backend, y viceversa.
+  #
+  # ADMIN_DISABLED=true además evita que este contenedor compile/sirva el
+  # dashboard de Vite -- no lo necesita, nadie lo visita.
+  worker:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile.dev
+    container_name: medusa-worker
+    env_file:
+      - apps/backend/.env
+    environment:
+      WORKER_MODE: worker
+      ADMIN_DISABLED: "true"
+      CI: "true" # ver el comentario junto a "backend" sobre por qué
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mock-bind:
+        condition: service_started
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/backend/node_modules
+    command: sh -c "cd apps/backend && pnpm dev"
+
+  # --- Storefront (Fase 4) ---
+  # Next.js Starter oficial de Medusa (medusajs/dtc-starter, carpeta
+  # apps/storefront), sin modificar más que lo estrictamente necesario
+  # para correr en Docker (ver src/lib/config.ts y src/middleware.ts para
+  # el porqué de MEDUSA_BACKEND_URL_INTERNAL).
+  storefront:
+    build:
+      context: .
+      dockerfile: apps/storefront/Dockerfile.dev
+    container_name: medusa-storefront
+    env_file:
+      - apps/storefront/.env
+    environment:
+      CI: "true" # ver el comentario junto a "backend" sobre por qué
+    ports:
+      - "8000:8000"
+    depends_on:
+      - backend
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/storefront/node_modules
+      - /app/apps/storefront/.next
+    command: sh -c "cd apps/storefront && pnpm dev"
+
+  # --- Mocks de sistemas externos (Fase 2) ---
+  # Cada uno simula, con el mismo contrato HTTP que tendría el servicio
+  # real, lo mínimo necesario para probar la integración desde Medusa sin
+  # credenciales reales. Ver el comentario al inicio de cada src/index.js.
+
+  mock-bind:
+    build:
+      context: .
+      dockerfile: apps/mock-bind/Dockerfile.dev
+    container_name: mock-bind
+    environment:
+      BIND_API_KEY: ${BIND_API_KEY:-bind-mock-key-local}
+      # En "true", el mock hace fallar ~20% de las peticiones con 500 al
+      # azar -- para probar lógica de reintentos del lado de Medusa.
+      # Apagado por defecto para no sorprender en el uso normal del mock.
+      SIMULATE_FAILURES: ${SIMULATE_FAILURES:-false}
+      CI: "true" # ver el comentario junto a "backend" en este mismo archivo
+    ports:
+      - "4001:4001"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/mock-bind/node_modules
+
+  mock-skydropx:
+    build:
+      context: .
+      dockerfile: apps/mock-skydropx/Dockerfile.dev
+    container_name: mock-skydropx
+    environment:
+      SKYDROPX_API_TOKEN: ${SKYDROPX_API_TOKEN:-skydropx-mock-token-local}
+      CI: "true"
+    ports:
+      - "4002:4002"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/mock-skydropx/node_modules
+
+  mock-cfdi:
+    build:
+      context: .
+      dockerfile: apps/mock-cfdi/Dockerfile.dev
+    container_name: mock-cfdi
+    environment:
+      CFDI_API_KEY: ${CFDI_API_KEY:-cfdi-mock-key-local}
+      CI: "true"
+    ports:
+      - "4003:4003"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/mock-cfdi/node_modules
+
+volumes:
+  postgres_data:
+  redis_data:

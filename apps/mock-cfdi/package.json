@@ -1,0 +1,14 @@
+{
+  "name": "mock-cfdi",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Simulador local de un PAC (Proveedor Autorizado de Certificacion) para timbrado de CFDI.",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
