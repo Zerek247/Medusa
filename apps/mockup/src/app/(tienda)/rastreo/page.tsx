@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { pedidosDemo } from "@/lib/datos";
 
 export default function RastreoPage() {
@@ -11,7 +11,7 @@ export default function RastreoPage() {
     "inicial" | "encontrado" | "no-encontrado"
   >("inicial");
 
-  function buscar(e: React.FormEvent) {
+  function buscar(e: FormEvent) {
     e.preventDefault();
     setBuscando(true);
     setTimeout(() => {

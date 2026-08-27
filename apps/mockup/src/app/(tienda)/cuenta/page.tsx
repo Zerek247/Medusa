@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 
 export default function CuentaPage() {
   const router = useRouter();
   const [entrando, setEntrando] = useState(false);
 
-  function entrar(e: React.FormEvent) {
+  function entrar(e: FormEvent) {
     e.preventDefault();
     setEntrando(true);
     setTimeout(() => router.push("/cuenta/pedidos"), 700);
