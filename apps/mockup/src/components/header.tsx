@@ -11,11 +11,11 @@ export default function Header() {
   const [menuAbierto, setMenuAbierto] = useState(false);
 
   return (
-    <header className="sticky top-[29px] z-40 border-b border-biobackup-navy/10 bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-biobackup-navy/10 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <Link href="/" className="flex shrink-0 items-center">
           <Image
-            src="/logo/biobackup-horizontal.png"
+            src="/logo/biobackup-horizontal.jpeg"
             alt="BioBackup — Equipo médico + consumibles"
             width={180}
             height={56}

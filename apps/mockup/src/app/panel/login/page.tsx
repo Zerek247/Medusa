@@ -19,11 +19,12 @@ export default function LoginPanelPage() {
       <div className="w-full max-w-[320px]">
         <div className="flex flex-col items-center">
           <Image
-            src="/logo/biobackup-vertical.png"
+            src="/logo/biobackup-vertical.jpeg"
             alt="BioBackup"
             width={90}
             height={110}
             className="h-20 w-auto"
+            priority
           />
           <h1 className="mt-4 text-lg font-semibold text-black/80">
             Panel de administración

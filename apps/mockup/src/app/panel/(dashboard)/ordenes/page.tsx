@@ -15,7 +15,7 @@ export default function OrdenesPanel() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-black/80">Órdenes</h1>
+        <h1 className="text-xl font-semibold text-black/80">Orders</h1>
         <span className="text-sm text-black/40">{ordenesAdmin.length} órdenes</span>
       </div>
 

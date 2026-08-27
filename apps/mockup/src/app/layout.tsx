@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import BannerMaqueta from "@/components/banner-maqueta";
 import { CarritoProvider } from "@/lib/carrito-context";
 
 export const metadata: Metadata = {
   title: "BioBackup — Equipo médico + consumibles",
   description:
     "Maqueta visual de la tienda y el panel de administración de BioBackup.",
-  icons: { icon: "/logo/biobackup-vertical.png" },
+  icons: { icon: "/logo/biobackup-vertical.jpeg" },
 };
 
 export default function RootLayout({
@@ -18,7 +17,6 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className="min-h-screen bg-white font-sans antialiased">
-        <BannerMaqueta />
         <CarritoProvider>{children}</CarritoProvider>
       </body>
     </html>

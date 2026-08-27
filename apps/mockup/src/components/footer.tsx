@@ -33,8 +33,16 @@ export default function Footer() {
           </ul>
         </div>
       </div>
-      <div className="border-t border-biobackup-navy/10 px-4 py-4 text-center text-xs text-biobackup-ink/50 sm:px-6">
-        Propuesta visual — no es un sitio en producción.
+      <div className="flex flex-col items-center gap-3 border-t border-biobackup-navy/10 px-4 py-4 text-center text-xs text-biobackup-ink/50 sm:px-6">
+        {/* Acceso rápido al panel de admin para la demo -- así no hay que
+            escribir /panel/login a mano frente al cliente. */}
+        <Link
+          href="/panel/productos"
+          className="rounded-full border border-biobackup-navy/20 px-4 py-1.5 text-xs font-semibold text-biobackup-navy transition hover:border-biobackup-blue hover:text-biobackup-blue"
+        >
+          Panel de administración →
+        </Link>
+        <span>Propuesta visual — no es un sitio en producción.</span>
       </div>
     </footer>
   );
