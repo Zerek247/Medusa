@@ -1,97 +1,768 @@
-// Genera las posiciones finales de los "puntitos" que imitan el patrón
-// de doble hélice / reloj de arena del logo de BioBackup -- no son las
-// coordenadas exactas del archivo original (no hay forma práctica de
-// trazarlas a mano con precisión de píxel), es una aproximación
-// matemática pensada para la animación de carga (logo-loader.tsx).
-// Si el trazo no se parece lo suficiente al logo real, este es el único
-// lugar que hay que retocar (los parámetros de abajo).
-
+// Posiciones EXACTAS de los puntos del logo real, extraídas del propio
+// archivo (assets/logo/biobackup-vertical.jpeg) con detección de blobs
+// por color -- no son una aproximación matemática, son las coordenadas
+// reales de cada punto del logo. Generado con
+// apps/mockup/scripts/extraer-puntos-logo.js -- si el logo cambia, corre
+// ese script de nuevo en vez de editar esto a mano.
 export type PuntoLogo = {
   x: number;
   y: number;
   r: number;
   color: string;
-  retrasoMs: number;
+  delayMs: number;
 };
 
-function round3(n: number) {
-  return Math.round(n * 1000) / 1000;
-}
+export const ANCHO_LOGO = 362;
+export const ALTO_LOGO = 351;
 
-const NAVY: [number, number, number] = [3, 80, 136]; // #035088
-const BLUE: [number, number, number] = [0, 143, 205]; // #008FCD
-const TEAL: [number, number, number] = [52, 190, 190]; // #34BEBE
-
-function mezclarColor(u: number): string {
-  // navy -> blue en la primera mitad, blue -> teal en la segunda
-  const [c1, c2, t] =
-    u < 0.5 ? [NAVY, BLUE, u / 0.5] : [BLUE, TEAL, (u - 0.5) / 0.5];
-  const r = Math.round(c1[0] + (c2[0] - c1[0]) * t);
-  const g = Math.round(c1[1] + (c2[1] - c1[1]) * t);
-  const b = Math.round(c1[2] + (c2[2] - c1[2]) * t);
-  return `rgb(${r},${g},${b})`;
-}
-
-// Una "hebra" -- del brazo abierto de arriba, cruzando el centro, hasta
-// el rizo cerrado de abajo. mirror=-1 dibuja la hebra izquierda,
-// mirror=1 la derecha.
-function generarHebra(
-  puntos: number,
-  mirror: 1 | -1,
-  centerX: number,
-  centerY: number
-): PuntoLogo[] {
-  const arr: PuntoLogo[] = [];
-  const H = 230; // alto del patrón de puntos
-  const spread = 118; // qué tan abiertos empiezan los brazos arriba
-  const drift = 66; // qué tanto se recorre el rizo hacia su lado
-  const turns = 1.35; // vueltas que da el rizo al final
-
-  for (let i = 0; i < puntos; i++) {
-    const u = i / (puntos - 1); // 0 = arriba, 1 = punta del rizo
-    // el giro se acelera hacia el final (rizo apretado), casi no gira
-    // arriba (brazo abierto y recto)
-    const angulo = Math.pow(u, 2.3) * turns * Math.PI * 2;
-    const decaimiento = 1 - 0.82 * Math.pow(u, 1.6); // 1 arriba -> 0.18 abajo
-
-    // Redondeado a 3 decimales: Math.cos/Math.pow pueden diferir en el
-    // último dígito entre el render del servidor (Node) y el del
-    // navegador -- sin este redondeo, React marca un "hydration
-    // mismatch" en cada punto porque el string SSR y el valor del
-    // cliente no coinciden carácter por carácter.
-    const x = round3(
-      centerX +
-        mirror * (spread * decaimiento * Math.cos(angulo) - drift * u * u)
-    );
-    const y = round3(centerY - H / 2 + u * H);
-
-    const r = round3(6.4 - u * 3.6); // puntos más chicos hacia el rizo
-    arr.push({
-      x,
-      y,
-      r: Math.max(r, 1.6),
-      color: mezclarColor(u),
-      retrasoMs: 0, // se asigna después, mezclando ambas hebras
-    });
+export const puntosLogo: PuntoLogo[] = [
+  {
+    "x": 12.77,
+    "y": 12.33,
+    "r": 7.94,
+    "color": "rgb(47,105,143)",
+    "delayMs": 1
+  },
+  {
+    "x": 301.5,
+    "y": 12.01,
+    "r": 6.98,
+    "color": "rgb(87,180,211)",
+    "delayMs": 0
+  },
+  {
+    "x": 280.75,
+    "y": 12.26,
+    "r": 7.67,
+    "color": "rgb(42,101,141)",
+    "delayMs": 1
+  },
+  {
+    "x": 321.71,
+    "y": 12.41,
+    "r": 5.59,
+    "color": "rgb(110,202,201)",
+    "delayMs": 1
+  },
+  {
+    "x": 340.16,
+    "y": 11.84,
+    "r": 2.46,
+    "color": "rgb(162,209,195)",
+    "delayMs": 0
+  },
+  {
+    "x": 282.64,
+    "y": 35.93,
+    "r": 7.82,
+    "color": "rgb(42,101,142)",
+    "delayMs": 39
+  },
+  {
+    "x": 10.85,
+    "y": 35.96,
+    "r": 7.8,
+    "color": "rgb(43,102,142)",
+    "delayMs": 40
+  },
+  {
+    "x": 304.32,
+    "y": 35.7,
+    "r": 6.89,
+    "color": "rgb(81,178,211)",
+    "delayMs": 39
+  },
+  {
+    "x": 322.94,
+    "y": 35.73,
+    "r": 5.14,
+    "color": "rgb(100,197,198)",
+    "delayMs": 39
+  },
+  {
+    "x": 343.44,
+    "y": 35.69,
+    "r": 2.26,
+    "color": "rgb(173,211,201)",
+    "delayMs": 39
+  },
+  {
+    "x": 15.12,
+    "y": 61.42,
+    "r": 7.84,
+    "color": "rgb(50,106,144)",
+    "delayMs": 81
+  },
+  {
+    "x": 278.79,
+    "y": 61.34,
+    "r": 7.86,
+    "color": "rgb(50,107,147)",
+    "delayMs": 81
+  },
+  {
+    "x": 300.26,
+    "y": 61.54,
+    "r": 6.6,
+    "color": "rgb(97,184,211)",
+    "delayMs": 81
+  },
+  {
+    "x": 320.3,
+    "y": 61.37,
+    "r": 5.23,
+    "color": "rgb(110,200,200)",
+    "delayMs": 81
+  },
+  {
+    "x": 343.29,
+    "y": 61.43,
+    "r": 2.11,
+    "color": "rgb(174,203,198)",
+    "delayMs": 81
+  },
+  {
+    "x": 22.49,
+    "y": 84.95,
+    "r": 7.9,
+    "color": "rgb(41,100,141)",
+    "delayMs": 120
+  },
+  {
+    "x": 271.48,
+    "y": 84.99,
+    "r": 7.78,
+    "color": "rgb(46,104,143)",
+    "delayMs": 120
+  },
+  {
+    "x": 296.95,
+    "y": 84.85,
+    "r": 6.65,
+    "color": "rgb(79,176,211)",
+    "delayMs": 120
+  },
+  {
+    "x": 317.57,
+    "y": 84.73,
+    "r": 5.08,
+    "color": "rgb(100,197,195)",
+    "delayMs": 119
+  },
+  {
+    "x": 339.42,
+    "y": 84.92,
+    "r": 1.95,
+    "color": "rgb(172,206,197)",
+    "delayMs": 120
+  },
+  {
+    "x": 34.39,
+    "y": 105.87,
+    "r": 7.55,
+    "color": "rgb(46,103,141)",
+    "delayMs": 154
+  },
+  {
+    "x": 259.42,
+    "y": 105.72,
+    "r": 7.82,
+    "color": "rgb(49,105,146)",
+    "delayMs": 154
+  },
+  {
+    "x": 284.63,
+    "y": 106,
+    "r": 6.33,
+    "color": "rgb(77,175,211)",
+    "delayMs": 154
+  },
+  {
+    "x": 306.85,
+    "y": 105.75,
+    "r": 4.89,
+    "color": "rgb(90,192,192)",
+    "delayMs": 154
+  },
+  {
+    "x": 333.09,
+    "y": 105.73,
+    "r": 1.87,
+    "color": "rgb(191,209,205)",
+    "delayMs": 154
+  },
+  {
+    "x": 48.62,
+    "y": 123.12,
+    "r": 7.78,
+    "color": "rgb(50,107,146)",
+    "delayMs": 182
+  },
+  {
+    "x": 245.06,
+    "y": 123.16,
+    "r": 7.53,
+    "color": "rgb(51,107,147)",
+    "delayMs": 182
+  },
+  {
+    "x": 273.79,
+    "y": 122.48,
+    "r": 6.7,
+    "color": "rgb(73,174,210)",
+    "delayMs": 181
+  },
+  {
+    "x": 294.35,
+    "y": 122.67,
+    "r": 5.38,
+    "color": "rgb(105,199,198)",
+    "delayMs": 182
+  },
+  {
+    "x": 321.62,
+    "y": 122.9,
+    "r": 2.59,
+    "color": "rgb(160,201,189)",
+    "delayMs": 182
+  },
+  {
+    "x": 66.36,
+    "y": 141.26,
+    "r": 8.16,
+    "color": "rgb(53,109,147)",
+    "delayMs": 212
+  },
+  {
+    "x": 227.33,
+    "y": 141.43,
+    "r": 7.88,
+    "color": "rgb(45,104,143)",
+    "delayMs": 212
+  },
+  {
+    "x": 260.61,
+    "y": 141.23,
+    "r": 6.6,
+    "color": "rgb(77,175,211)",
+    "delayMs": 212
+  },
+  {
+    "x": 282.45,
+    "y": 141.45,
+    "r": 4.82,
+    "color": "rgb(110,199,200)",
+    "delayMs": 212
+  },
+  {
+    "x": 308.41,
+    "y": 141.45,
+    "r": 2.65,
+    "color": "rgb(158,202,190)",
+    "delayMs": 212
+  },
+  {
+    "x": 84.66,
+    "y": 156.1,
+    "r": 7.88,
+    "color": "rgb(41,101,142)",
+    "delayMs": 236
+  },
+  {
+    "x": 209.14,
+    "y": 156.09,
+    "r": 7.65,
+    "color": "rgb(41,100,140)",
+    "delayMs": 236
+  },
+  {
+    "x": 244.58,
+    "y": 155.8,
+    "r": 6.7,
+    "color": "rgb(74,174,211)",
+    "delayMs": 236
+  },
+  {
+    "x": 269.58,
+    "y": 155.84,
+    "r": 5.08,
+    "color": "rgb(98,196,198)",
+    "delayMs": 236
+  },
+  {
+    "x": 297.5,
+    "y": 155.5,
+    "r": 1.95,
+    "color": "rgb(176,203,194)",
+    "delayMs": 235
+  },
+  {
+    "x": 189.29,
+    "y": 168.68,
+    "r": 7.67,
+    "color": "rgb(45,104,142)",
+    "delayMs": 257
+  },
+  {
+    "x": 104.26,
+    "y": 168.78,
+    "r": 7.65,
+    "color": "rgb(43,101,142)",
+    "delayMs": 257
+  },
+  {
+    "x": 227.84,
+    "y": 168.6,
+    "r": 6.48,
+    "color": "rgb(77,176,210)",
+    "delayMs": 257
+  },
+  {
+    "x": 256.88,
+    "y": 169.46,
+    "r": 5.08,
+    "color": "rgb(88,192,192)",
+    "delayMs": 258
+  },
+  {
+    "x": 284.5,
+    "y": 169.32,
+    "r": 2.99,
+    "color": "rgb(160,206,194)",
+    "delayMs": 258
+  },
+  {
+    "x": 125.97,
+    "y": 180.48,
+    "r": 7.69,
+    "color": "rgb(47,105,144)",
+    "delayMs": 276
+  },
+  {
+    "x": 167.59,
+    "y": 180.3,
+    "r": 7.76,
+    "color": "rgb(39,99,139)",
+    "delayMs": 276
+  },
+  {
+    "x": 206.05,
+    "y": 179.75,
+    "r": 6.63,
+    "color": "rgb(81,177,210)",
+    "delayMs": 275
+  },
+  {
+    "x": 241.99,
+    "y": 179.85,
+    "r": 4.65,
+    "color": "rgb(114,201,200)",
+    "delayMs": 275
+  },
+  {
+    "x": 270.4,
+    "y": 180.3,
+    "r": 2.52,
+    "color": "rgb(180,207,200)",
+    "delayMs": 276
+  },
+  {
+    "x": 147.46,
+    "y": 190.08,
+    "r": 8.14,
+    "color": "rgb(50,107,146)",
+    "delayMs": 292
+  },
+  {
+    "x": 190.18,
+    "y": 190.47,
+    "r": 6.65,
+    "color": "rgb(79,176,211)",
+    "delayMs": 293
+  },
+  {
+    "x": 229.17,
+    "y": 190.7,
+    "r": 5.29,
+    "color": "rgb(107,199,200)",
+    "delayMs": 293
+  },
+  {
+    "x": 257.87,
+    "y": 190.53,
+    "r": 2.19,
+    "color": "rgb(180,210,203)",
+    "delayMs": 293
+  },
+  {
+    "x": 124.22,
+    "y": 201.77,
+    "r": 7.8,
+    "color": "rgb(42,100,141)",
+    "delayMs": 311
+  },
+  {
+    "x": 169.53,
+    "y": 201.82,
+    "r": 7.88,
+    "color": "rgb(44,103,142)",
+    "delayMs": 311
+  },
+  {
+    "x": 208.62,
+    "y": 201.57,
+    "r": 6.43,
+    "color": "rgb(75,173,209)",
+    "delayMs": 311
+  },
+  {
+    "x": 241.69,
+    "y": 201.73,
+    "r": 4.98,
+    "color": "rgb(104,199,198)",
+    "delayMs": 311
+  },
+  {
+    "x": 270.32,
+    "y": 202.24,
+    "r": 2.82,
+    "color": "rgb(170,207,198)",
+    "delayMs": 312
+  },
+  {
+    "x": 102.38,
+    "y": 212.63,
+    "r": 7.74,
+    "color": "rgb(37,98,139)",
+    "delayMs": 329
+  },
+  {
+    "x": 191.39,
+    "y": 212.75,
+    "r": 7.63,
+    "color": "rgb(45,102,143)",
+    "delayMs": 329
+  },
+  {
+    "x": 225.46,
+    "y": 212.33,
+    "r": 6.79,
+    "color": "rgb(75,175,212)",
+    "delayMs": 329
+  },
+  {
+    "x": 253.99,
+    "y": 212.65,
+    "r": 5.2,
+    "color": "rgb(105,198,199)",
+    "delayMs": 329
+  },
+  {
+    "x": 282,
+    "y": 212.5,
+    "r": 2.26,
+    "color": "rgb(177,213,201)",
+    "delayMs": 329
+  },
+  {
+    "x": 80.96,
+    "y": 225.62,
+    "r": 7.65,
+    "color": "rgb(54,107,145)",
+    "delayMs": 350
+  },
+  {
+    "x": 212.63,
+    "y": 225.59,
+    "r": 7.74,
+    "color": "rgb(49,107,145)",
+    "delayMs": 350
+  },
+  {
+    "x": 241.54,
+    "y": 225.82,
+    "r": 6.72,
+    "color": "rgb(87,180,212)",
+    "delayMs": 351
+  },
+  {
+    "x": 267.05,
+    "y": 225.64,
+    "r": 5.05,
+    "color": "rgb(101,197,197)",
+    "delayMs": 350
+  },
+  {
+    "x": 294.86,
+    "y": 226.1,
+    "r": 2.59,
+    "color": "rgb(157,197,183)",
+    "delayMs": 351
+  },
+  {
+    "x": 60.92,
+    "y": 241.28,
+    "r": 7.8,
+    "color": "rgb(43,101,141)",
+    "delayMs": 376
+  },
+  {
+    "x": 232.76,
+    "y": 241.3,
+    "r": 7.86,
+    "color": "rgb(40,101,141)",
+    "delayMs": 376
+  },
+  {
+    "x": 259.95,
+    "y": 240.8,
+    "r": 6.65,
+    "color": "rgb(80,177,210)",
+    "delayMs": 375
+  },
+  {
+    "x": 282.49,
+    "y": 241.14,
+    "r": 5.14,
+    "color": "rgb(111,200,200)",
+    "delayMs": 376
+  },
+  {
+    "x": 307.43,
+    "y": 241.04,
+    "r": 2.99,
+    "color": "rgb(162,203,193)",
+    "delayMs": 376
+  },
+  {
+    "x": 43.62,
+    "y": 256.68,
+    "r": 7.78,
+    "color": "rgb(46,103,142)",
+    "delayMs": 401
+  },
+  {
+    "x": 250.02,
+    "y": 256.69,
+    "r": 7.84,
+    "color": "rgb(42,101,142)",
+    "delayMs": 401
+  },
+  {
+    "x": 275.66,
+    "y": 256.75,
+    "r": 6.72,
+    "color": "rgb(79,176,211)",
+    "delayMs": 401
+  },
+  {
+    "x": 295.96,
+    "y": 257.2,
+    "r": 4.89,
+    "color": "rgb(105,198,196)",
+    "delayMs": 402
+  },
+  {
+    "x": 320.29,
+    "y": 257.19,
+    "r": 2.59,
+    "color": "rgb(165,200,192)",
+    "delayMs": 402
+  },
+  {
+    "x": 28.51,
+    "y": 279.1,
+    "r": 7.8,
+    "color": "rgb(42,101,140)",
+    "delayMs": 438
+  },
+  {
+    "x": 265.32,
+    "y": 279.07,
+    "r": 7.78,
+    "color": "rgb(42,101,142)",
+    "delayMs": 438
+  },
+  {
+    "x": 290.28,
+    "y": 279.34,
+    "r": 6.96,
+    "color": "rgb(80,176,211)",
+    "delayMs": 438
+  },
+  {
+    "x": 53.93,
+    "y": 281.56,
+    "r": 7.72,
+    "color": "rgb(41,100,139)",
+    "delayMs": 442
+  },
+  {
+    "x": 239.95,
+    "y": 281.65,
+    "r": 7.78,
+    "color": "rgb(44,101,140)",
+    "delayMs": 442
+  },
+  {
+    "x": 309.61,
+    "y": 279.59,
+    "r": 5.05,
+    "color": "rgb(96,195,195)",
+    "delayMs": 439
+  },
+  {
+    "x": 333,
+    "y": 279.35,
+    "r": 2.33,
+    "color": "rgb(169,207,198)",
+    "delayMs": 438
+  },
+  {
+    "x": 73.77,
+    "y": 297.24,
+    "r": 7.8,
+    "color": "rgb(45,104,143)",
+    "delayMs": 468
+  },
+  {
+    "x": 220.08,
+    "y": 297.42,
+    "r": 7.78,
+    "color": "rgb(49,105,145)",
+    "delayMs": 468
+  },
+  {
+    "x": 15.04,
+    "y": 298.69,
+    "r": 7.84,
+    "color": "rgb(47,104,144)",
+    "delayMs": 470
+  },
+  {
+    "x": 279.24,
+    "y": 298.62,
+    "r": 7.74,
+    "color": "rgb(43,102,141)",
+    "delayMs": 470
+  },
+  {
+    "x": 301.52,
+    "y": 298.47,
+    "r": 6.79,
+    "color": "rgb(77,175,210)",
+    "delayMs": 470
+  },
+  {
+    "x": 319.22,
+    "y": 298.01,
+    "r": 5.14,
+    "color": "rgb(105,198,198)",
+    "delayMs": 469
+  },
+  {
+    "x": 339.16,
+    "y": 298.84,
+    "r": 2.46,
+    "color": "rgb(158,203,190)",
+    "delayMs": 470
+  },
+  {
+    "x": 79.16,
+    "y": 323.57,
+    "r": 7.92,
+    "color": "rgb(51,106,144)",
+    "delayMs": 511
+  },
+  {
+    "x": 10.86,
+    "y": 323.51,
+    "r": 7.86,
+    "color": "rgb(45,103,142)",
+    "delayMs": 511
+  },
+  {
+    "x": 215.11,
+    "y": 323.44,
+    "r": 7.86,
+    "color": "rgb(48,105,143)",
+    "delayMs": 511
+  },
+  {
+    "x": 282.66,
+    "y": 323.67,
+    "r": 7.88,
+    "color": "rgb(45,102,142)",
+    "delayMs": 511
+  },
+  {
+    "x": 304.81,
+    "y": 323.45,
+    "r": 6.79,
+    "color": "rgb(83,177,211)",
+    "delayMs": 511
+  },
+  {
+    "x": 321.75,
+    "y": 323.63,
+    "r": 4.92,
+    "color": "rgb(110,199,200)",
+    "delayMs": 511
+  },
+  {
+    "x": 343.3,
+    "y": 323.9,
+    "r": 2.52,
+    "color": "rgb(161,203,194)",
+    "delayMs": 511
+  },
+  {
+    "x": 21.2,
+    "y": 345.83,
+    "r": 6.6,
+    "color": "rgb(38,97,139)",
+    "delayMs": 547
+  },
+  {
+    "x": 69.16,
+    "y": 345.87,
+    "r": 6.53,
+    "color": "rgb(39,99,140)",
+    "delayMs": 547
+  },
+  {
+    "x": 224.72,
+    "y": 345.86,
+    "r": 6.7,
+    "color": "rgb(40,100,142)",
+    "delayMs": 547
+  },
+  {
+    "x": 272.59,
+    "y": 345.87,
+    "r": 6.58,
+    "color": "rgb(47,104,144)",
+    "delayMs": 547
+  },
+  {
+    "x": 296.7,
+    "y": 346.55,
+    "r": 5.73,
+    "color": "rgb(70,171,209)",
+    "delayMs": 548
+  },
+  {
+    "x": 315.19,
+    "y": 347.31,
+    "r": 4.3,
+    "color": "rgb(98,194,196)",
+    "delayMs": 550
+  },
+  {
+    "x": 339.37,
+    "y": 347.47,
+    "r": 2.46,
+    "color": "rgb(179,218,207)",
+    "delayMs": 550
   }
-  return arr;
-}
-
-export function generarPuntosLogo(
-  centerX = 170,
-  centerY = 150,
-  porHebra = 24
-): PuntoLogo[] {
-  const izquierda = generarHebra(porHebra, -1, centerX, centerY);
-  const derecha = generarHebra(porHebra, 1, centerX, centerY);
-  const todos = [...izquierda, ...derecha];
-
-  // Retraso escalonado para que el "flujo" se vea como que entra en
-  // orden (de arriba/afuera hacia el centro y el rizo), no todo de golpe.
-  todos.forEach((p, i) => {
-    const u = i % porHebra;
-    p.retrasoMs = Math.round((u / (porHebra - 1)) * 500);
-  });
-
-  return todos;
-}
+];
