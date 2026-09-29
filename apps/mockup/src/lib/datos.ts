@@ -344,3 +344,66 @@ export const colaFallidos = [
 export const productosSinDatosEnvio = productos.filter(
   (p) => p.requiereDatosEnvio
 );
+
+// Regla de negocio del cliente: envío gratis en pedidos mayores a $3,000
+// MXN (checkout y el banner del carrito la usan).
+export const UMBRAL_ENVIO_GRATIS = 3000;
+
+// --- Contenido de las páginas nuevas (Sobre nosotros / FAQ / Promociones) ---
+// Todo texto de relleno, editable aquí -- en el sistema real esto sería
+// administrable desde el panel (el cliente pidió poder subir su propia
+// imagen del hero y editar el texto de las promociones).
+
+export const preguntasFrecuentes = [
+  {
+    pregunta: "¿Cuánto tarda en llegar mi pedido?",
+    respuesta:
+      "Depende de la paquetería elegida en el checkout: de 1-2 días hábiles con envío Express, o 3-5 días hábiles con envío Terrestre estándar. Para equipo grande que requiere cotización aparte, te contactamos con el tiempo estimado antes de confirmar el envío.",
+  },
+  {
+    pregunta: "¿A partir de qué monto el envío es gratis?",
+    respuesta:
+      "En pedidos mayores a $3,000 MXN el envío no tiene costo, sin importar la paquetería elegida.",
+  },
+  {
+    pregunta: "¿Emiten factura?",
+    respuesta:
+      "Sí, todas las compras se facturan con CFDI 4.0. Captura tus datos fiscales (RFC, razón social, régimen fiscal y uso de CFDI) durante el checkout.",
+  },
+  {
+    pregunta: "¿Puedo rastrear mi pedido sin crear una cuenta?",
+    respuesta:
+      'Sí -- usa la sección "Rastrear pedido" con tu número de pedido y el correo con el que compraste.',
+  },
+  {
+    pregunta: "¿Tienen garantía los equipos?",
+    respuesta:
+      "Todos los equipos cuentan con garantía del fabricante. El periodo exacto varía por producto y se indica en su ficha.",
+  },
+  {
+    pregunta: "¿Venden a hospitales y clínicas, no solo consultorios?",
+    respuesta:
+      "Sí, atendemos tanto compras individuales de consultorio como pedidos institucionales de hospitales y clínicas.",
+  },
+];
+
+export const promociones = [
+  {
+    titulo: "Envío gratis desde $3,000",
+    descripcion:
+      "En todo el catálogo, sin código promocional -- se aplica solo al llegar al monto en tu carrito.",
+    slugImagen: "promo-envio",
+  },
+  {
+    titulo: "Equipo de diagnóstico",
+    descripcion:
+      "Monitores, desfibriladores y kits de exploración con disponibilidad inmediata.",
+    slugImagen: "promo-diagnostico",
+  },
+  {
+    titulo: "Oxigenoterapia para consultorio",
+    descripcion:
+      "Concentradores y ventiladores portátiles, con envío calculado a tu código postal.",
+    slugImagen: "promo-oxigeno",
+  },
+];

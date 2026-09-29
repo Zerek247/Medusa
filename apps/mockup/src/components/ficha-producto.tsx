@@ -36,6 +36,7 @@ export default function FichaProducto({
         <div className="grid grid-cols-4 gap-2 md:grid-cols-1">
           <ImagenProducto
             nombre={producto.nombre}
+            slug={producto.slug}
             className="col-span-4 aspect-square rounded-xl md:col-span-1"
           />
         </div>

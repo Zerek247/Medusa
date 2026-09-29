@@ -1,44 +1,28 @@
-// Todavía no hay fotos reales de producto (ver nota en lib/datos.ts) --
-// mientras llegan, este componente dibuja un marcador visual con la
-// paleta de la marca en vez de dejar una caja gris vacía o un ícono
-// genérico de "imagen rota".
+// Todavía no hay fotos reales de producto (ver nota en lib/datos.ts). El
+// cliente pidió explícitamente meter imágenes genéricas de internet
+// mientras tanto -- usamos Picsum (picsum.photos), sembrado con el slug
+// del producto para que cada uno muestre SIEMPRE la misma foto (no una
+// aleatoria distinta en cada carga). Es un <img> normal, no next/image,
+// porque son URLs externas y unoptimized:true ya cubre la necesidad real
+// (no hay que darle de alta el dominio en next.config.js).
 export default function ImagenProducto({
   nombre,
+  slug,
   className = "",
 }: {
   nombre: string;
+  slug: string;
   className?: string;
 }) {
-  const inicial = nombre.trim().charAt(0).toUpperCase();
-
   return (
-    <div
-      className={`relative flex items-center justify-center overflow-hidden bg-biobackup-gradient ${className}`}
-    >
-      <svg
-        className="absolute inset-0 h-full w-full opacity-25"
-        viewBox="0 0 200 200"
-        preserveAspectRatio="xMidYMid slice"
-      >
-        {Array.from({ length: 24 }).map((_, i) => {
-          const angle = (i / 24) * Math.PI * 2;
-          const r = 70 + (i % 3) * 12;
-          const cx = 100 + Math.cos(angle) * r;
-          const cy = 100 + Math.sin(angle) * r;
-          return (
-            <circle
-              key={i}
-              cx={cx}
-              cy={cy}
-              r={i % 4 === 0 ? 4 : 2.5}
-              fill="white"
-            />
-          );
-        })}
-      </svg>
-      <span className="relative font-sans text-4xl font-bold text-white/90">
-        {inicial}
-      </span>
+    <div className={`relative overflow-hidden bg-biobackup-paper ${className}`}>
+      <img
+        src={`https://picsum.photos/seed/biobackup-${slug}/600/600`}
+        alt={nombre}
+        className="h-full w-full object-cover"
+        loading="lazy"
+      />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-biobackup-navy/15 via-transparent to-transparent" />
     </div>
   );
 }

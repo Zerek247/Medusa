@@ -16,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body className="min-h-screen bg-white font-sans antialiased">
+      <body className="min-h-screen bg-biobackup-ambiente bg-fixed font-sans antialiased">
         <CarritoProvider>{children}</CarritoProvider>
       </body>
     </html>

@@ -32,7 +32,7 @@ export default function RastreoPage() {
         Prueba con el folio <strong>#1042</strong> y cualquier correo.
       </p>
 
-      <form onSubmit={buscar} className="mt-6 space-y-4">
+      <form onSubmit={buscar} className="mt-6 space-y-4 rounded-xl border border-biobackup-navy/10 bg-white p-5">
         <label className="block text-sm">
           <span className="mb-1 block font-medium text-biobackup-ink/70">
             Número de pedido
@@ -72,7 +72,7 @@ export default function RastreoPage() {
       )}
 
       {resultado === "encontrado" && pedido && (
-        <div className="mt-6 rounded-xl border border-biobackup-navy/10 p-5">
+        <div className="mt-6 rounded-xl border border-biobackup-navy/10 bg-white p-5">
           <div className="flex justify-between text-sm">
             <span className="font-semibold text-biobackup-ink">
               {pedido.folio}

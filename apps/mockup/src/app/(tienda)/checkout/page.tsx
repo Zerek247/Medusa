@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCarrito } from "@/lib/carrito-context";
-import { formatoMXN } from "@/lib/datos";
+import { formatoMXN, UMBRAL_ENVIO_GRATIS } from "@/lib/datos";
 import { REGIMENES_FISCALES, USOS_CFDI } from "@/lib/constantes-fiscales";
 
 type Paso = "direccion" | "fiscal" | "envio" | "pago";
@@ -54,8 +54,12 @@ export default function CheckoutPage() {
     }
   }, [paso, paqueteria]);
 
-  const costoEnvio =
+  // Regla del cliente: mayor a $3,000 MXN no se cobra envío, sin importar
+  // la paquetería elegida.
+  const envioGratis = total >= UMBRAL_ENVIO_GRATIS;
+  const precioPaqueteriaElegida =
     PAQUETERIAS_FALSAS.find((p) => p.id === paqueteria)?.precio ?? 0;
+  const costoEnvio = envioGratis ? 0 : precioPaqueteriaElegida;
 
   function confirmarPago() {
     setProcesando(true);
@@ -108,7 +112,7 @@ export default function CheckoutPage() {
       </div>
 
       <div className="mt-8 grid gap-8 md:grid-cols-3">
-        <div className="md:col-span-2">
+        <div className="rounded-xl border border-biobackup-navy/10 bg-white p-5 md:col-span-2">
           {paso === "direccion" && (
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-biobackup-ink">
@@ -170,6 +174,14 @@ export default function CheckoutPage() {
               <h2 className="text-lg font-semibold text-biobackup-ink">
                 Paquetería
               </h2>
+              {envioGratis && (
+                <div className="flex items-center gap-2 rounded-lg bg-biobackup-green/15 px-4 py-3 text-sm font-medium text-biobackup-navy">
+                  <svg className="h-4 w-4 shrink-0 text-biobackup-green" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
+                  Tu pedido supera los {formatoMXN(UMBRAL_ENVIO_GRATIS)} — el envío no tiene costo.
+                </div>
+              )}
               {cotizando ? (
                 <div className="flex items-center gap-3 rounded-lg border border-biobackup-navy/10 bg-biobackup-paper p-4 text-sm text-biobackup-ink/60">
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-biobackup-blue border-t-transparent" />
@@ -204,7 +216,18 @@ export default function CheckoutPage() {
                         </span>
                       </span>
                       <span className="font-semibold text-biobackup-ink">
-                        {p.precio === 0 ? "Por cotizar" : formatoMXN(p.precio)}
+                        {p.precio === 0 ? (
+                          "Por cotizar"
+                        ) : envioGratis ? (
+                          <span className="flex items-center gap-1.5">
+                            <span className="text-xs font-normal text-biobackup-ink/40 line-through">
+                              {formatoMXN(p.precio)}
+                            </span>
+                            <span className="text-biobackup-green">Gratis</span>
+                          </span>
+                        ) : (
+                          formatoMXN(p.precio)
+                        )}
                       </span>
                     </label>
                   ))}
@@ -249,7 +272,7 @@ export default function CheckoutPage() {
           )}
         </div>
 
-        <aside className="h-fit rounded-xl border border-biobackup-navy/10 p-5">
+        <aside className="h-fit rounded-xl border border-biobackup-navy/10 bg-white p-5">
           <h3 className="text-sm font-semibold text-biobackup-ink">
             Resumen
           </h3>
@@ -270,7 +293,13 @@ export default function CheckoutPage() {
             </div>
             <div className="flex justify-between text-biobackup-ink/60">
               <span>Envío</span>
-              <span>{paqueteria ? formatoMXN(costoEnvio) : "—"}</span>
+              <span>
+                {!paqueteria
+                  ? "—"
+                  : envioGratis
+                  ? <span className="font-medium text-biobackup-green">Gratis</span>
+                  : formatoMXN(costoEnvio)}
+              </span>
             </div>
             <div className="flex justify-between pt-1 text-base font-bold text-biobackup-navy">
               <span>Total</span>

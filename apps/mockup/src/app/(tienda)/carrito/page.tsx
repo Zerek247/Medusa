@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCarrito } from "@/lib/carrito-context";
-import { formatoMXN } from "@/lib/datos";
+import { formatoMXN, UMBRAL_ENVIO_GRATIS } from "@/lib/datos";
 
 export default function CarritoPage() {
   const { lineas, cambiarCantidad, quitar, total } = useCarrito();
@@ -23,11 +23,40 @@ export default function CarritoPage() {
     );
   }
 
+  const faltante = UMBRAL_ENVIO_GRATIS - total;
+  const envioGratis = faltante <= 0;
+  const progreso = Math.min(100, Math.round((total / UMBRAL_ENVIO_GRATIS) * 100));
+
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
       <h1 className="text-2xl font-bold text-biobackup-ink">Carrito</h1>
 
-      <div className="mt-6 divide-y divide-biobackup-navy/10 rounded-xl border border-biobackup-navy/10">
+      <div className="mt-4 rounded-xl border border-biobackup-navy/10 bg-white p-4">
+        {envioGratis ? (
+          <p className="flex items-center gap-2 text-sm font-medium text-biobackup-navy">
+            <svg className="h-4 w-4 shrink-0 text-biobackup-green" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+            Tu pedido ya tiene envío gratis
+          </p>
+        ) : (
+          <p className="text-sm text-biobackup-ink/70">
+            Te faltan{" "}
+            <span className="font-semibold text-biobackup-navy">
+              {formatoMXN(faltante)}
+            </span>{" "}
+            para envío gratis
+          </p>
+        )}
+        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-biobackup-navy/10">
+          <div
+            className="h-full rounded-full bg-biobackup-green transition-all"
+            style={{ width: `${progreso}%` }}
+          />
+        </div>
+      </div>
+
+      <div className="mt-6 divide-y divide-biobackup-navy/10 rounded-xl border border-biobackup-navy/10 bg-white">
         {lineas.map((l) => (
           <div key={l.slug} className="flex items-center gap-4 p-4">
             <div className="flex-1">

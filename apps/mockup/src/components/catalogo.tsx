@@ -72,7 +72,7 @@ export default function Catalogo({
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             placeholder="Buscar producto..."
-            className="w-full rounded-full border border-biobackup-navy/20 py-2 pl-9 pr-3 text-sm outline-none transition focus:border-biobackup-blue"
+            className="w-full rounded-full border border-biobackup-navy/20 bg-white py-2 pl-9 pr-3 text-sm outline-none transition focus:border-biobackup-blue"
           />
         </div>
       </div>
@@ -86,9 +86,9 @@ export default function Catalogo({
           <Link
             key={p.slug}
             href={`/producto/${p.slug}`}
-            className="group overflow-hidden rounded-xl border border-biobackup-navy/10 transition hover:shadow-md"
+            className="group overflow-hidden rounded-xl border border-biobackup-navy/10 bg-white shadow-sm transition hover:shadow-md"
           >
-            <ImagenProducto nombre={p.nombre} className="aspect-square" />
+            <ImagenProducto nombre={p.nombre} slug={p.slug} className="aspect-square" />
             <div className="p-3">
               <p className="line-clamp-2 text-sm font-medium text-biobackup-ink">
                 {p.nombre}

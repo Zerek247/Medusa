@@ -3,8 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { categorias } from "@/lib/datos";
 import { useCarrito } from "@/lib/carrito-context";
+
+const NAV_PRINCIPAL = [
+  { href: "/tienda", label: "Catálogo" },
+  { href: "/promociones", label: "Promociones" },
+  { href: "/sobre-nosotros", label: "Sobre nosotros" },
+  { href: "/contacto", label: "Contacto" },
+  { href: "/faq", label: "FAQ" },
+];
 
 export default function Header() {
   const { totalArticulos } = useCarrito();
@@ -24,14 +31,14 @@ export default function Header() {
           />
         </Link>
 
-        <nav className="hidden items-center gap-6 text-sm font-medium text-biobackup-ink md:flex">
-          {categorias.map((c) => (
+        <nav className="hidden items-center gap-5 text-sm font-medium text-biobackup-ink lg:flex">
+          {NAV_PRINCIPAL.map((item) => (
             <Link
-              key={c.slug}
-              href={`/tienda/${c.slug}`}
+              key={item.href}
+              href={item.href}
               className="transition hover:text-biobackup-blue"
             >
-              {c.nombre}
+              {item.label}
             </Link>
           ))}
         </nav>
@@ -74,7 +81,7 @@ export default function Header() {
             )}
           </Link>
           <button
-            className="text-biobackup-ink md:hidden"
+            className="text-biobackup-ink lg:hidden"
             onClick={() => setMenuAbierto((v) => !v)}
             aria-label="Abrir menú"
           >
@@ -86,15 +93,15 @@ export default function Header() {
       </div>
 
       {menuAbierto && (
-        <div className="border-t border-biobackup-navy/10 bg-white px-4 py-3 md:hidden">
+        <div className="border-t border-biobackup-navy/10 bg-white px-4 py-3 lg:hidden">
           <nav className="flex flex-col gap-3 text-sm font-medium text-biobackup-ink">
-            {categorias.map((c) => (
+            {NAV_PRINCIPAL.map((item) => (
               <Link
-                key={c.slug}
-                href={`/tienda/${c.slug}`}
+                key={item.href}
+                href={item.href}
                 onClick={() => setMenuAbierto(false)}
               >
-                {c.nombre}
+                {item.label}
               </Link>
             ))}
             <Link href="/rastreo" onClick={() => setMenuAbierto(false)}>

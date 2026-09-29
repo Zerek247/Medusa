@@ -1,5 +1,6 @@
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import WhatsappWidget from "@/components/whatsapp-widget";
 
 export default function TiendaLayout({
   children,
@@ -11,6 +12,7 @@ export default function TiendaLayout({
       <Header />
       <main>{children}</main>
       <Footer />
+      <WhatsappWidget />
     </>
   );
 }

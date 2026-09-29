@@ -3,12 +3,37 @@ import Link from "next/link";
 export default function Footer() {
   return (
     <footer className="mt-16 border-t border-biobackup-navy/10 bg-biobackup-paper">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-3">
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-4">
         <div>
           <p className="text-sm font-bold text-biobackup-navy">BioBackup</p>
           <p className="mt-2 text-sm text-biobackup-ink/70">
             Equipo médico y consumibles para consultorio y hospital.
           </p>
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-biobackup-ink">Tienda</p>
+          <ul className="mt-2 space-y-1.5 text-sm text-biobackup-ink/70">
+            <li>
+              <Link href="/tienda" className="hover:text-biobackup-blue">
+                Catálogo
+              </Link>
+            </li>
+            <li>
+              <Link href="/promociones" className="hover:text-biobackup-blue">
+                Promociones
+              </Link>
+            </li>
+            <li>
+              <Link href="/sobre-nosotros" className="hover:text-biobackup-blue">
+                Sobre nosotros
+              </Link>
+            </li>
+            <li>
+              <Link href="/faq" className="hover:text-biobackup-blue">
+                Preguntas frecuentes
+              </Link>
+            </li>
+          </ul>
         </div>
         <div>
           <p className="text-sm font-semibold text-biobackup-ink">Ayuda</p>
@@ -21,6 +46,11 @@ export default function Footer() {
             <li>
               <Link href="/cuenta" className="hover:text-biobackup-blue">
                 Mi cuenta
+              </Link>
+            </li>
+            <li>
+              <Link href="/contacto" className="hover:text-biobackup-blue">
+                Contacto
               </Link>
             </li>
           </ul>
