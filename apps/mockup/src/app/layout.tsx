@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { CarritoProvider } from "@/lib/carrito-context";
+import LogoLoader from "@/components/logo-loader";
 
 export const metadata: Metadata = {
   title: "BioBackup — Equipo médico + consumibles",
@@ -17,6 +18,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className="min-h-screen bg-biobackup-ambiente bg-fixed font-sans antialiased">
+        <LogoLoader />
         <CarritoProvider>{children}</CarritoProvider>
       </body>
     </html>
