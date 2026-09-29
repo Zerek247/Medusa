@@ -17,9 +17,12 @@ const RAIZ = path.join(__dirname, "..", "..", "..");
 const RUTA_LOGO = path.join(RAIZ, "assets", "logo", "biobackup-vertical.jpeg");
 const RUTA_SALIDA = path.join(__dirname, "..", "src", "lib", "puntos-logo.ts");
 
-// Del alto total de la imagen, el texto "BioBackup" empieza como al 76%
-// hacia abajo -- recortamos ahí para no confundir letras con puntos.
-const ALTO_UTIL_FRACCION = 0.76;
+// Del alto total de la imagen (463px), medido fila por fila dónde
+// empieza de verdad la letra "B" de "Bio" (el ancho de la franja de
+// color salta de ~240px a 330+px justo ahí): es la fila 383, no el 76%
+// que se había asumido antes -- ese recorte anterior sí cortaba puntos
+// reales del rizo inferior. 383/463 ≈ 0.827.
+const ALTO_UTIL_FRACCION = 383 / 463;
 const MAX_RETRASO_MS = 550; // debe coincidir con MAX_RETRASO_MS en logo-loader.tsx
 
 async function main() {
@@ -94,10 +97,30 @@ async function main() {
     }
   }
 
-  const minY = Math.min(...blobs.map((b) => b.y));
-  const maxY = Math.max(...blobs.map((b) => b.y));
+  // Cerca del fondo del recorte, los dos rizos (izquierdo y derecho) están
+  // bien separados -- no debería haber NINGÚN punto real justo en medio.
+  // El puntito de la "i" de "Bio" cae exactamente ahí (es lo único que
+  // sobrevive del texto con este recorte), así que se descarta por
+  // posición en vez de por distancia a otros blobs (probamos eso primero
+  // y era demasiado agresivo: borraba puntos reales de las zonas donde
+  // el patrón real también es disperso, como los brazos de arriba).
+  const ZONA_MUERTA_X = [95, 195];
+  const ZONA_MUERTA_Y_DESDE = 330;
+  const blobsFiltrados = blobs.filter((b) => {
+    const enZonaMuerta =
+      b.y >= ZONA_MUERTA_Y_DESDE &&
+      b.x >= ZONA_MUERTA_X[0] &&
+      b.x <= ZONA_MUERTA_X[1];
+    return !enZonaMuerta;
+  });
+  console.log(
+    `Descartados ${blobs.length - blobsFiltrados.length} blob(s) en la zona muerta central (ruido de texto).`
+  );
 
-  const puntos = blobs.map((b) => {
+  const minY = Math.min(...blobsFiltrados.map((b) => b.y));
+  const maxY = Math.max(...blobsFiltrados.map((b) => b.y));
+
+  const puntos = blobsFiltrados.map((b) => {
     const u = (b.y - minY) / (maxY - minY);
     return {
       x: Math.round(b.x * 100) / 100,
