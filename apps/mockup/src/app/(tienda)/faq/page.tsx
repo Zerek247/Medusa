@@ -12,7 +12,7 @@ export default function FaqPage() {
         Preguntas frecuentes
       </h1>
 
-      <div className="mt-8 divide-y divide-biobackup-navy/10 rounded-xl border border-biobackup-navy/10 bg-white">
+      <div className="mt-8 divide-y divide-biobackup-navy/10 rounded-xl border border-biobackup-navy/10 bg-surface">
         {preguntasFrecuentes.map((item, i) => {
           const abiertaAhora = abierta === i;
           return (

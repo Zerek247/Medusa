@@ -23,7 +23,7 @@ const RUTA_SALIDA = path.join(__dirname, "..", "src", "lib", "puntos-logo.ts");
 // que se había asumido antes -- ese recorte anterior sí cortaba puntos
 // reales del rizo inferior. 383/463 ≈ 0.827.
 const ALTO_UTIL_FRACCION = 383 / 463;
-const MAX_RETRASO_MS = 550; // debe coincidir con MAX_RETRASO_MS en logo-loader.tsx
+const MAX_RETRASO_MS = 330; // debe coincidir con MAX_RETRASO_MS en logo-loader.tsx
 
 async function main() {
   const { data, info } = await sharp(RUTA_LOGO).raw().toBuffer({ resolveWithObject: true });

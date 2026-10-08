@@ -7,16 +7,20 @@ import { puntosLogo, ANCHO_LOGO, ALTO_LOGO } from "@/lib/puntos-logo";
 // Duraciones de cada tramo. Ajustar aquí si se sigue viendo
 // muy rápido/lento -- todo lo demás (los "momentos" de abajo) se calcula
 // solo a partir de estos números.
-const MAX_RETRASO_MS = 550; // debe coincidir con MAX_RETRASO_MS del script de extracción
-const DURACION_VUELO_MS = 650; // cuánto tarda CADA punto en llegar a su lugar
-const PAUSA_ANTES_DEL_TEXTO_MS = 150; // aire entre "puntos completos" y texto
-const DURACION_TEXTO_MS = 400;
-const DURACION_QUIETO_MS = 1300; // el logo YA armado, quieto, se alcanza a leer
-const DURACION_SALIDA_MS = 350;
+// Pantalla de carga CORTA a propósito: apenas termina de armarse el logo
+// se va y abre la página (total ~1.4s). El tiempo de espera de los
+// elementos de la página (.reveal en globals.css) está calculado para
+// empezar justo cuando esto se desvanece.
+const MAX_RETRASO_MS = 330; // debe coincidir con MAX_RETRASO_MS del script de extracción
+const DURACION_VUELO_MS = 520; // cuánto tarda CADA punto en llegar a su lugar
+const DURACION_TEXTO_MS = 300;
+const PAUSA_LOGO_ARMADO_MS = 220; // un respiro con el logo ya completo
+const DURACION_SALIDA_MS = 300;
 
 const T_TODOS_LLEGARON = MAX_RETRASO_MS + DURACION_VUELO_MS;
-const T_TEXTO = T_TODOS_LLEGARON + PAUSA_ANTES_DEL_TEXTO_MS;
-const T_EMPIEZA_SALIDA = T_TEXTO + DURACION_TEXTO_MS + DURACION_QUIETO_MS;
+// el texto entra mientras llegan los últimos puntos (no después)
+const T_TEXTO = T_TODOS_LLEGARON - 250;
+const T_EMPIEZA_SALIDA = T_TODOS_LLEGARON + PAUSA_LOGO_ARMADO_MS;
 const T_DESMONTA = T_EMPIEZA_SALIDA + DURACION_SALIDA_MS;
 
 const CENTRO_X = ANCHO_LOGO / 2;
@@ -89,7 +93,7 @@ export default function LogoLoader() {
 
   return (
     <div
-      className={`fixed inset-0 z-[100] flex items-center justify-center bg-white transition-opacity ${
+      className={`fixed inset-0 z-[100] flex items-center justify-center bg-surface transition-opacity ${
         fase === "saliendo" ? "pointer-events-none opacity-0" : "opacity-100"
       }`}
       style={{
@@ -128,7 +132,7 @@ export default function LogoLoader() {
             transition: `opacity ${DURACION_TEXTO_MS}ms ease-out, transform ${DURACION_TEXTO_MS}ms ease-out`,
           }}
         >
-          <span className="text-biobackup-navy">Bio</span>
+          <span className="text-biobackup-navy dark:text-biobackup-skyLight">Bio</span>
           <span className="text-biobackup-blue">Backup</span>
         </div>
       </div>

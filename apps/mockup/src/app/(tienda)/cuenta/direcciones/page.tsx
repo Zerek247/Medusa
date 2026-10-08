@@ -36,7 +36,7 @@ export default function DireccionesPage() {
         {direcciones.map((d, i) => (
           <div
             key={i}
-            className="rounded-xl border border-biobackup-navy/10 bg-white p-4 text-sm text-biobackup-ink/70"
+            className="rounded-xl border border-biobackup-navy/10 bg-surface p-4 text-sm text-biobackup-ink/70"
           >
             <p className="font-semibold text-biobackup-ink">{d.etiqueta}</p>
             <p>{d.calle}</p>
@@ -53,7 +53,7 @@ export default function DireccionesPage() {
       {formAbierto ? (
         <form
           onSubmit={agregar}
-          className="mt-4 max-w-md space-y-3 rounded-xl border border-biobackup-navy/10 bg-white p-5"
+          className="mt-4 max-w-md space-y-3 rounded-xl border border-biobackup-navy/10 bg-surface p-5"
         >
           <CampoDireccion etiqueta="Nombre de la dirección (ej. Consultorio)" valor={nueva.etiqueta} onCambio={(v) => setNueva((n) => ({ ...n, etiqueta: v }))} />
           <CampoDireccion etiqueta="Calle y número" valor={nueva.calle} onCambio={(v) => setNueva((n) => ({ ...n, calle: v }))} />

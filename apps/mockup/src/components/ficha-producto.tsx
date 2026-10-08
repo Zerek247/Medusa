@@ -32,12 +32,12 @@ export default function FichaProducto({
         / {nombreCategoria}
       </p>
 
-      <div className="mt-4 grid gap-8 md:grid-cols-2">
+      <div className="mt-4 grid gap-8 rounded-[2rem] border border-white/70 bg-surface/80 p-4 shadow-[0_20px_60px_-28px_rgba(3,80,136,0.5)] backdrop-blur dark:border-white/10 sm:p-7 md:grid-cols-2">
         <div className="grid grid-cols-4 gap-2 md:grid-cols-1">
           <ImagenProducto
             nombre={producto.nombre}
             slug={producto.slug}
-            className="col-span-4 aspect-square rounded-xl md:col-span-1"
+            className="col-span-4 aspect-square rounded-3xl md:col-span-1"
           />
         </div>
 
@@ -48,7 +48,7 @@ export default function FichaProducto({
           <p className="mt-1 text-xs text-biobackup-ink/50">
             SKU {producto.sku}
           </p>
-          <p className="mt-4 text-3xl font-bold text-biobackup-navy">
+          <p className="text-gradient mt-4 text-4xl font-extrabold">
             {formatoMXN(producto.precio)}
           </p>
 

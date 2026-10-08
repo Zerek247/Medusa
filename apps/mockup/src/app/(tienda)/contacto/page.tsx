@@ -26,7 +26,7 @@ export default function ContactoPage() {
       </p>
 
       <div className="mt-8 grid gap-8 md:grid-cols-2">
-        <div className="space-y-4 rounded-xl border border-biobackup-navy/10 bg-white p-5 text-sm text-biobackup-ink/70">
+        <div className="space-y-4 rounded-xl border border-biobackup-navy/10 bg-surface p-5 text-sm text-biobackup-ink/70">
           <div>
             <p className="font-semibold text-biobackup-ink">Correo</p>
             <p>ventas@biobackup.mx</p>
@@ -46,13 +46,13 @@ export default function ContactoPage() {
         </div>
 
         {enviado ? (
-          <div className="flex flex-col items-center justify-center rounded-xl border border-biobackup-navy/10 bg-white p-8 text-center">
+          <div className="flex flex-col items-center justify-center rounded-xl border border-biobackup-navy/10 bg-surface p-8 text-center">
             <p className="text-sm font-semibold text-biobackup-navy">
               ¡Gracias! Te respondemos pronto.
             </p>
           </div>
         ) : (
-          <form onSubmit={enviar} className="space-y-3 rounded-xl border border-biobackup-navy/10 bg-white p-5">
+          <form onSubmit={enviar} className="space-y-3 rounded-xl border border-biobackup-navy/10 bg-surface p-5">
             <Campo etiqueta="Nombre" />
             <Campo etiqueta="Correo" type="email" />
             <label className="block text-sm">

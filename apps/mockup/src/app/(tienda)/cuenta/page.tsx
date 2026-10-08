@@ -20,7 +20,7 @@ export default function CuentaPage() {
         Cuenta de demostración precargada — cualquier dato entra.
       </p>
 
-      <form onSubmit={entrar} className="mt-6 space-y-4 rounded-xl border border-biobackup-navy/10 bg-white p-5">
+      <form onSubmit={entrar} className="mt-6 space-y-4 rounded-xl border border-biobackup-navy/10 bg-surface p-5">
         <label className="block text-sm">
           <span className="mb-1 block font-medium text-biobackup-ink/70">
             Correo

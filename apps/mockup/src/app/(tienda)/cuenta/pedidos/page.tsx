@@ -20,7 +20,7 @@ export default function PedidosPage() {
           {pedidosDemo.map((p) => (
             <div
               key={p.folio}
-              className="rounded-xl border border-biobackup-navy/10 bg-white p-4"
+              className="rounded-xl border border-biobackup-navy/10 bg-surface p-4"
             >
               <div className="flex items-center justify-between text-sm">
                 <span className="font-semibold text-biobackup-ink">

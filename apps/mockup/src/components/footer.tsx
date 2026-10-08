@@ -1,78 +1,81 @@
 import Link from "next/link";
 
+const COLUMNAS = [
+  {
+    titulo: "Tienda",
+    enlaces: [
+      { href: "/tienda", texto: "Catálogo" },
+      { href: "/promociones", texto: "Promociones" },
+      { href: "/sobre-nosotros", texto: "Sobre nosotros" },
+      { href: "/faq", texto: "Preguntas frecuentes" },
+    ],
+  },
+  {
+    titulo: "Ayuda",
+    enlaces: [
+      { href: "/rastreo", texto: "Rastrear un pedido" },
+      { href: "/cuenta", texto: "Mi cuenta" },
+      { href: "/contacto", texto: "Contacto" },
+    ],
+  },
+];
+
 export default function Footer() {
   return (
-    <footer className="mt-16 border-t border-biobackup-navy/10 bg-biobackup-paper">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-4">
-        <div>
-          <p className="text-sm font-bold text-biobackup-navy">BioBackup</p>
-          <p className="mt-2 text-sm text-biobackup-ink/70">
-            Equipo médico y consumibles para consultorio y hospital.
-          </p>
+    <footer className="mx-3 mt-20 sm:mx-5">
+      <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#04365c] via-biobackup-navy to-[#0a6f9c] text-white shadow-[0_30px_70px_-30px_rgba(3,80,136,0.8)]">
+        <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-biobackup-teal/25 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-28 left-10 h-64 w-64 rounded-full bg-biobackup-blue/30 blur-3xl" />
+
+        <div className="relative grid gap-10 px-7 py-12 sm:px-12 md:grid-cols-4">
+          <div className="md:col-span-1">
+            <p className="text-xl font-extrabold">
+              Bio<span className="text-biobackup-skyLight">Backup</span>
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-white/70">
+              Equipo médico y consumibles para consultorio y hospital.
+            </p>
+          </div>
+
+          {COLUMNAS.map((col) => (
+            <div key={col.titulo}>
+              <p className="text-sm font-bold uppercase tracking-wider text-biobackup-skyLight">
+                {col.titulo}
+              </p>
+              <ul className="mt-4 space-y-2.5 text-sm text-white/75">
+                {col.enlaces.map((e) => (
+                  <li key={e.href}>
+                    <Link href={e.href} className="transition hover:text-white hover:underline">
+                      {e.texto}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+
+          <div>
+            <p className="text-sm font-bold uppercase tracking-wider text-biobackup-skyLight">
+              Contacto
+            </p>
+            <ul className="mt-4 space-y-2.5 text-sm text-white/75">
+              <li>ventas@biobackup.mx</li>
+              <li>Ciudad de México</li>
+            </ul>
+          </div>
         </div>
-        <div>
-          <p className="text-sm font-semibold text-biobackup-ink">Tienda</p>
-          <ul className="mt-2 space-y-1.5 text-sm text-biobackup-ink/70">
-            <li>
-              <Link href="/tienda" className="hover:text-biobackup-blue">
-                Catálogo
-              </Link>
-            </li>
-            <li>
-              <Link href="/promociones" className="hover:text-biobackup-blue">
-                Promociones
-              </Link>
-            </li>
-            <li>
-              <Link href="/sobre-nosotros" className="hover:text-biobackup-blue">
-                Sobre nosotros
-              </Link>
-            </li>
-            <li>
-              <Link href="/faq" className="hover:text-biobackup-blue">
-                Preguntas frecuentes
-              </Link>
-            </li>
-          </ul>
+
+        <div className="relative flex flex-col items-center gap-3 border-t border-white/15 px-6 py-5 text-center text-xs text-white/60">
+          {/* Acceso rápido al panel de admin para la demo -- así no hay que
+              escribir /panel/login a mano frente al cliente. */}
+          <Link
+            href="/panel/productos"
+            className="rounded-full border border-white/30 bg-white/10 px-5 py-2 text-xs font-bold text-white backdrop-blur transition hover:bg-white/20"
+          >
+            Panel de administración →
+          </Link>
+          <span>Propuesta visual — no es un sitio en producción.</span>
         </div>
-        <div>
-          <p className="text-sm font-semibold text-biobackup-ink">Ayuda</p>
-          <ul className="mt-2 space-y-1.5 text-sm text-biobackup-ink/70">
-            <li>
-              <Link href="/rastreo" className="hover:text-biobackup-blue">
-                Rastrear un pedido
-              </Link>
-            </li>
-            <li>
-              <Link href="/cuenta" className="hover:text-biobackup-blue">
-                Mi cuenta
-              </Link>
-            </li>
-            <li>
-              <Link href="/contacto" className="hover:text-biobackup-blue">
-                Contacto
-              </Link>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <p className="text-sm font-semibold text-biobackup-ink">Contacto</p>
-          <ul className="mt-2 space-y-1.5 text-sm text-biobackup-ink/70">
-            <li>ventas@biobackup.mx</li>
-            <li>Ciudad de México</li>
-          </ul>
-        </div>
-      </div>
-      <div className="flex flex-col items-center gap-3 border-t border-biobackup-navy/10 px-4 py-4 text-center text-xs text-biobackup-ink/50 sm:px-6">
-        {/* Acceso rápido al panel de admin para la demo -- así no hay que
-            escribir /panel/login a mano frente al cliente. */}
-        <Link
-          href="/panel/productos"
-          className="rounded-full border border-biobackup-navy/20 px-4 py-1.5 text-xs font-semibold text-biobackup-navy transition hover:border-biobackup-blue hover:text-biobackup-blue"
-        >
-          Panel de administración →
-        </Link>
-        <span>Propuesta visual — no es un sitio en producción.</span>
       </div>
     </footer>
   );

@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import ImagenProducto from "./imagen-producto";
-import { categorias, formatoMXN, Producto } from "@/lib/datos";
+import TarjetaProducto from "./tarjeta-producto";
+import { categorias, Producto } from "@/lib/datos";
 
 export default function Catalogo({
   productos,
@@ -72,7 +72,7 @@ export default function Catalogo({
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             placeholder="Buscar producto..."
-            className="w-full rounded-full border border-biobackup-navy/20 bg-white py-2 pl-9 pr-3 text-sm outline-none transition focus:border-biobackup-blue"
+            className="w-full rounded-full border border-biobackup-navy/20 bg-surface py-2 pl-9 pr-3 text-sm outline-none transition focus:border-biobackup-blue"
           />
         </div>
       </div>
@@ -82,27 +82,10 @@ export default function Catalogo({
       </p>
 
       <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-        {filtrados.map((p) => (
-          <Link
-            key={p.slug}
-            href={`/producto/${p.slug}`}
-            className="group overflow-hidden rounded-xl border border-biobackup-navy/10 bg-white shadow-sm transition hover:shadow-md"
-          >
-            <ImagenProducto nombre={p.nombre} slug={p.slug} className="aspect-square" />
-            <div className="p-3">
-              <p className="line-clamp-2 text-sm font-medium text-biobackup-ink">
-                {p.nombre}
-              </p>
-              <p className="mt-1 text-sm font-bold text-biobackup-navy">
-                {formatoMXN(p.precio)}
-              </p>
-              {p.existencia <= 3 && (
-                <p className="mt-0.5 text-xs font-medium text-amber-600">
-                  Últimas {p.existencia} piezas
-                </p>
-              )}
-            </div>
-          </Link>
+        {filtrados.map((p, i) => (
+          <div key={p.slug} className="reveal-rapido" style={{ ["--d" as string]: i % 8 }}>
+            <TarjetaProducto p={p} />
+          </div>
         ))}
         {filtrados.length === 0 && (
           <p className="col-span-full py-12 text-center text-sm text-biobackup-ink/50">

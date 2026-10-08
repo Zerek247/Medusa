@@ -16,7 +16,7 @@ export default function PromocionesPage() {
         {promociones.map((promo, i) => (
           <div
             key={i}
-            className="overflow-hidden rounded-2xl border border-biobackup-navy/10 bg-white"
+            className="overflow-hidden rounded-2xl border border-biobackup-navy/10 bg-surface"
           >
             <div className="relative aspect-[4/3]">
               <img

@@ -42,7 +42,7 @@ export default function SobreNosotrosPage() {
 
 function Valor({ titulo, texto }: { titulo: string; texto: string }) {
   return (
-    <div className="rounded-xl border border-biobackup-navy/10 bg-white p-5">
+    <div className="rounded-xl border border-biobackup-navy/10 bg-surface p-5">
       <p className="text-sm font-semibold text-biobackup-navy">{titulo}</p>
       <p className="mt-1.5 text-sm text-biobackup-ink/60">{texto}</p>
     </div>

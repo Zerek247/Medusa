@@ -31,7 +31,7 @@ export default function CarritoPage() {
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
       <h1 className="text-2xl font-bold text-biobackup-ink">Carrito</h1>
 
-      <div className="mt-4 rounded-xl border border-biobackup-navy/10 bg-white p-4">
+      <div className="mt-4 rounded-xl border border-biobackup-navy/10 bg-surface p-4">
         {envioGratis ? (
           <p className="flex items-center gap-2 text-sm font-medium text-biobackup-navy">
             <svg className="h-4 w-4 shrink-0 text-biobackup-green" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
@@ -56,7 +56,7 @@ export default function CarritoPage() {
         </div>
       </div>
 
-      <div className="mt-6 divide-y divide-biobackup-navy/10 rounded-xl border border-biobackup-navy/10 bg-white">
+      <div className="mt-6 divide-y divide-biobackup-navy/10 rounded-xl border border-biobackup-navy/10 bg-surface">
         {lineas.map((l) => (
           <div key={l.slug} className="flex items-center gap-4 p-4">
             <div className="flex-1">

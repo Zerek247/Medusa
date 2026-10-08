@@ -2,15 +2,112 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ---- Tema: variables que usan surface / paper / ink (tailwind.config.ts) ---- */
+:root {
+  --c-surface: 255 255 255;
+  --c-paper: 244 250 252;
+  --c-ink: 15 30 51;
+}
+
+.dark {
+  --c-surface: 18 33 48;
+  --c-paper: 14 26 38;
+  --c-ink: 230 240 247;
+  color-scheme: dark;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  color: #16233a;
+  color: rgb(var(--c-ink));
 }
 
-/* Panel del widget de WhatsApp (whatsapp-widget.tsx) */
+/* ---- Fondo de la tienda (no blanco): degradado con los colores de la marca ---- */
+.fondo-tienda {
+  background-color: #eef7fa;
+  background-image:
+    radial-gradient(ellipse 70% 50% at 8% 0%, rgba(162, 220, 240, 0.55), transparent 60%),
+    radial-gradient(ellipse 60% 45% at 100% 22%, rgba(95, 197, 168, 0.32), transparent 58%),
+    radial-gradient(ellipse 55% 40% at 0% 78%, rgba(0, 143, 205, 0.18), transparent 60%),
+    linear-gradient(180deg, #eaf5f9 0%, #f4fafb 45%, #e8f2f7 100%);
+  background-attachment: fixed;
+}
+
+.dark .fondo-tienda {
+  background-color: #08121c;
+  background-image:
+    radial-gradient(ellipse 70% 50% at 8% 0%, rgba(0, 143, 205, 0.28), transparent 60%),
+    radial-gradient(ellipse 60% 45% at 100% 24%, rgba(52, 190, 190, 0.2), transparent 58%),
+    radial-gradient(ellipse 55% 40% at 0% 80%, rgba(3, 80, 136, 0.38), transparent 60%),
+    linear-gradient(180deg, #08121c 0%, #0b1824 50%, #07101a 100%);
+}
+
+/* ---- Entrada suave del contenido (arranca justo cuando se va la pantalla de carga) ---- */
+.reveal {
+  animation: subir-suave 0.7s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
+  animation-delay: calc(1.05s + var(--d, 0) * 90ms);
+}
+
+/* Para listas que se vuelven a pintar al filtrar/buscar: sin la espera larga. */
+.reveal-rapido {
+  animation: subir-suave 0.45s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
+  animation-delay: calc(var(--d, 0) * 50ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-rapido {
+    animation: none;
+  }
+}
+
+/* ---- Texto con degradado de la marca ---- */
+.text-gradient {
+  background-image: linear-gradient(100deg, #035088 0%, #008fcd 50%, #34bebe 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.dark .text-gradient {
+  background-image: linear-gradient(100deg, #7fd0f2 0%, #4fc3f0 45%, #5fe0d0 100%);
+}
+
+/* ---- Solo dentro de la tienda (no toca el panel de administración) ---- */
+.tienda-root .bg-biobackup-navy {
+  background-image: linear-gradient(100deg, #035088 0%, #0a73b4 50%, #008fcd 100%);
+  background-size: 200% 100%;
+  background-position: 0% 50%;
+  transition: background-position 0.5s ease, transform 0.2s ease, box-shadow 0.25s ease;
+}
+
+.tienda-root a.bg-biobackup-navy:hover,
+.tienda-root button.bg-biobackup-navy:not(:disabled):hover {
+  background-position: 100% 50%;
+  box-shadow: 0 10px 24px -10px rgba(0, 143, 205, 0.7);
+}
+
+.tienda-root :is(input, select, textarea) {
+  border-radius: 0.9rem;
+}
+
+.dark .tienda-root .text-biobackup-navy {
+  color: #8fd6f5;
+}
+
+.dark .tienda-root :is(input, select, textarea) {
+  background-color: rgb(var(--c-surface));
+  color: rgb(var(--c-ink));
+  border-color: rgb(255 255 255 / 0.16);
+}
+
+.dark .tienda-root ::placeholder {
+  color: rgb(230 240 247 / 0.4);
+}
+
+/* ---- Panel del widget de WhatsApp (whatsapp-widget.tsx) ---- */
 @keyframes whatsapp-pop {
   from {
     opacity: 0;

@@ -112,7 +112,7 @@ export default function CheckoutPage() {
       </div>
 
       <div className="mt-8 grid gap-8 md:grid-cols-3">
-        <div className="rounded-xl border border-biobackup-navy/10 bg-white p-5 md:col-span-2">
+        <div className="rounded-xl border border-biobackup-navy/10 bg-surface p-5 md:col-span-2">
           {paso === "direccion" && (
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-biobackup-ink">
@@ -272,7 +272,7 @@ export default function CheckoutPage() {
           )}
         </div>
 
-        <aside className="h-fit rounded-xl border border-biobackup-navy/10 bg-white p-5">
+        <aside className="h-fit rounded-xl border border-biobackup-navy/10 bg-surface p-5">
           <h3 className="text-sm font-semibold text-biobackup-ink">
             Resumen
           </h3>
@@ -358,7 +358,7 @@ function Select({
       <select
         value={valor}
         onChange={(e) => onCambio(e.target.value)}
-        className="w-full rounded-lg border border-biobackup-navy/20 bg-white px-3 py-2 outline-none transition focus:border-biobackup-blue"
+        className="w-full rounded-lg border border-biobackup-navy/20 bg-surface px-3 py-2 outline-none transition focus:border-biobackup-blue"
       >
         {opciones.map((o) => (
           <option key={o.value} value={o.value}>

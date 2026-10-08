@@ -1,7 +1,16 @@
 import type { Metadata } from "next";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { CarritoProvider } from "@/lib/carrito-context";
 import LogoLoader from "@/components/logo-loader";
+
+// Montserrat es la tipografía del manual de marca del cliente.
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-montserrat",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "BioBackup — Equipo médico + consumibles",
@@ -10,14 +19,21 @@ export const metadata: Metadata = {
   icons: { icon: "/logo/biobackup-vertical.jpeg" },
 };
 
+// Se ejecuta ANTES de que React pinte nada: si la persona había elegido
+// modo noche, lo aplica de una vez para que no se vea un destello blanco.
+const SCRIPT_TEMA = `try{if(localStorage.getItem('biobackup-tema')==='dark'){document.documentElement.classList.add('dark')}}catch(e){}`;
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es">
-      <body className="min-h-screen bg-biobackup-ambiente bg-fixed font-sans antialiased">
+    <html lang="es" className={montserrat.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: SCRIPT_TEMA }} />
+      </head>
+      <body className="min-h-screen bg-surface font-sans antialiased">
         <LogoLoader />
         <CarritoProvider>{children}</CarritoProvider>
       </body>

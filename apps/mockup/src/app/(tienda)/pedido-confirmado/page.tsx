@@ -42,7 +42,7 @@ export default function PedidoConfirmadoPage() {
       </p>
 
       {resumen && (
-        <div className="mt-8 rounded-xl border border-biobackup-navy/10 bg-white p-5 text-left">
+        <div className="mt-8 rounded-xl border border-biobackup-navy/10 bg-surface p-5 text-left">
           <div className="flex justify-between text-sm">
             <span className="font-semibold text-biobackup-ink">
               Pedido {resumen.folio}

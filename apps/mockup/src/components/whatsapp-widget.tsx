@@ -35,7 +35,7 @@ export default function WhatsappWidget() {
   return (
     <div ref={ref} className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3">
       {abierto && (
-        <div className="w-[320px] max-w-[calc(100vw-2.5rem)] origin-bottom-right animate-[whatsapp-pop_.18s_ease-out] overflow-hidden rounded-2xl border border-black/5 bg-white shadow-2xl">
+        <div className="w-[320px] max-w-[calc(100vw-2.5rem)] origin-bottom-right animate-[whatsapp-pop_.18s_ease-out] overflow-hidden rounded-2xl border border-black/5 bg-surface shadow-2xl">
           <div className="bg-gradient-to-br from-biobackup-navy to-biobackup-teal px-4 py-4">
             <p className="text-sm font-semibold text-white">
               Escríbenos por WhatsApp
