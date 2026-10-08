@@ -24,13 +24,25 @@ export default function Header() {
     <header className="sticky top-0 z-40 px-3 pt-3 sm:px-5">
       <div className="mx-auto max-w-6xl rounded-3xl border border-white/60 bg-surface/75 shadow-[0_12px_40px_-16px_rgba(3,80,136,0.45)] backdrop-blur-xl dark:border-white/10">
         <div className="flex items-center justify-between gap-3 px-4 py-2.5 sm:px-5">
-          <Link href="/" className="flex shrink-0 items-center rounded-2xl bg-white px-2.5 py-1 dark:bg-white">
+          {/* Logo sin fondo: dos versiones del mismo PNG transparente. La de
+              modo noche tiene el azul marino aclarado para que "Bio" y los
+              puntos oscuros se lean sobre el fondo oscuro. */}
+          <Link href="/" className="flex shrink-0 items-center" aria-label="BioBackup — Equipo médico + consumibles">
             <Image
               src="/logo/biobackup-horizontal.png"
               alt="BioBackup — Equipo médico + consumibles"
               width={200}
               height={78}
-              className="h-10 w-auto sm:h-11"
+              className="h-11 w-auto dark:hidden sm:h-12"
+              priority
+            />
+            <Image
+              src="/logo/biobackup-horizontal-oscuro.png"
+              alt=""
+              aria-hidden="true"
+              width={200}
+              height={78}
+              className="hidden h-11 w-auto dark:block sm:h-12"
               priority
             />
           </Link>
