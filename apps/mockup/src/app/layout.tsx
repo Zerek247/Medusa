@@ -1,14 +1,24 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import { Montserrat, Montserrat_Alternates } from "next/font/google";
 import "./globals.css";
 import { CarritoProvider } from "@/lib/carrito-context";
 import LogoLoader from "@/components/logo-loader";
 
-// Montserrat es la tipografía del manual de marca del cliente.
+// Toda la página usa la familia Montserrat (tipografía del manual de marca):
+// Montserrat normal/cursiva en todos sus pesos para el texto, y la variante
+// Montserrat Alternates para los títulos (h1/h2, ver globals.css).
 const montserrat = Montserrat({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  style: ["normal", "italic"],
   variable: "--font-montserrat",
+  display: "swap",
+});
+
+const montserratAlternates = Montserrat_Alternates({
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
+  variable: "--font-montserrat-alt",
   display: "swap",
 });
 
@@ -29,7 +39,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className={montserrat.variable} suppressHydrationWarning>
+    <html lang="es" className={`${montserrat.variable} ${montserratAlternates.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: SCRIPT_TEMA }} />
       </head>

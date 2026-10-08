@@ -38,19 +38,20 @@ const config: Config = {
         "3xl": "2.25rem",
       },
       fontFamily: {
+        // Todo el sitio (tienda, panel, pantalla de carga) usa Montserrat.
         sans: [
-          "Inter",
+          "var(--font-montserrat)",
+          "Montserrat",
           "-apple-system",
           "BlinkMacSystemFont",
           "Segoe UI",
           "sans-serif",
         ],
-        brand: [
+        // Variante de la misma familia, para títulos.
+        display: [
+          "var(--font-montserrat-alt)",
           "var(--font-montserrat)",
-          "Inter",
-          "-apple-system",
-          "BlinkMacSystemFont",
-          "Segoe UI",
+          "Montserrat",
           "sans-serif",
         ],
       },

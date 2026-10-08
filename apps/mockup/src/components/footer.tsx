@@ -59,8 +59,21 @@ export default function Footer() {
               Contacto
             </p>
             <ul className="mt-4 space-y-2.5 text-sm text-white/75">
-              <li>ventas@biobackup.mx</li>
-              <li>Ciudad de México</li>
+              <li>
+                <a href="mailto:Ventas@biobackup.mx" className="transition hover:text-white hover:underline">
+                  Ventas@biobackup.mx
+                </a>
+              </li>
+              <li>
+                <a href="tel:+525558330938" className="transition hover:text-white hover:underline">
+                  55 5833 0938
+                </a>
+              </li>
+              <li>
+                <a href="https://wa.me/526143143157" target="_blank" rel="noopener noreferrer" className="transition hover:text-white hover:underline">
+                  WhatsApp 614 314 3157
+                </a>
+              </li>
             </ul>
           </div>
         </div>

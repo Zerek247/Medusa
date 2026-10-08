@@ -24,6 +24,12 @@ body {
   color: rgb(var(--c-ink));
 }
 
+/* Títulos con Montserrat Alternates (variante de la familia Montserrat) */
+h1,
+h2 {
+  font-family: var(--font-montserrat-alt), var(--font-montserrat), sans-serif;
+}
+
 /* ---- Fondo de la tienda (no blanco): degradado con los colores de la marca ---- */
 .fondo-tienda {
   background-color: #eef7fa;
