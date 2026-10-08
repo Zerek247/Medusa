@@ -55,7 +55,7 @@ export default function RequiereDatosEnvioPanel() {
               <button
                 onClick={() => guardar(p.slug)}
                 disabled={guardando === p.slug}
-                className="mt-3 rounded-lg bg-biobackup-navy px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-biobackup-navyLight disabled:opacity-60"
+                className="mt-3 min-h-[44px] rounded-lg bg-biobackup-navy px-4 py-2 text-xs font-semibold text-white transition hover:bg-biobackup-navyLight disabled:opacity-60"
               >
                 {guardando === p.slug ? "Guardando..." : "Guardar"}
               </button>
@@ -74,7 +74,7 @@ function CampoNumero({ etiqueta }: { etiqueta: string }) {
       <input
         type="number"
         step="0.1"
-        className="w-full rounded-md border border-black/10 px-2 py-1.5 text-sm outline-none transition focus:border-biobackup-blue"
+        className="w-full min-h-[44px] rounded-md border border-black/10 px-2 py-1.5 text-sm outline-none transition focus:border-biobackup-blue"
       />
     </label>
   );

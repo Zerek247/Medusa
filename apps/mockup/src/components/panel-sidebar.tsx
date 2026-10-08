@@ -15,7 +15,7 @@ import {
   IconEnvio,
 } from "./panel-icons";
 
-const NAV = [
+export const NAV = [
   { href: "/panel/ordenes", label: "Orders", icon: IconOrders },
   { href: "/panel/ordenes/borradores", label: "Drafts", icon: IconDrafts, sub: true },
   { href: "/panel/productos", label: "Products", icon: IconProducts },
@@ -56,7 +56,7 @@ export default function PanelSidebar() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 10.5a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z" />
           </svg>
           <span className="flex-1">Search</span>
-          <span className="rounded border border-white/10 px-1 text-[10px]">⌘K</span>
+          <span className="rounded border border-white/10 px-1 text-[11px]">⌘K</span>
         </div>
       </div>
 
@@ -83,5 +83,35 @@ export default function PanelSidebar() {
         })}
       </nav>
     </aside>
+  );
+}
+
+// Menú del panel para celular: el sidebar se oculta bajo `sm`, así que
+// aquí va la misma navegación como una franja con scroll horizontal.
+export function PanelNavMovil() {
+  const pathname = usePathname();
+
+  return (
+    <nav
+      aria-label="Menú del panel"
+      className="flex gap-1.5 overflow-x-auto bg-[#111113] px-3 py-2 sm:hidden"
+    >
+      {NAV.map((item) => {
+        const activo = pathname === item.href;
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={`inline-flex min-h-[44px] shrink-0 items-center whitespace-nowrap rounded-full px-4 text-sm transition ${
+              activo
+                ? "bg-white/[0.12] font-semibold text-white"
+                : "text-zinc-400 hover:bg-white/[0.06] hover:text-zinc-200"
+            }`}
+          >
+            {item.label}
+          </Link>
+        );
+      })}
+    </nav>
   );
 }

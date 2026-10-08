@@ -87,7 +87,7 @@ export default function FichaProducto({
             <div className="flex gap-6 border-b border-biobackup-navy/10">
               <button
                 onClick={() => setTab("specs")}
-                className={`pb-2 text-sm font-semibold ${
+                className={`min-h-[44px] pb-2 text-sm font-semibold ${
                   tab === "specs"
                     ? "border-b-2 border-biobackup-navy text-biobackup-navy"
                     : "text-biobackup-ink/50"
@@ -97,7 +97,7 @@ export default function FichaProducto({
               </button>
               <button
                 onClick={() => setTab("envio")}
-                className={`pb-2 text-sm font-semibold ${
+                className={`min-h-[44px] pb-2 text-sm font-semibold ${
                   tab === "envio"
                     ? "border-b-2 border-biobackup-navy text-biobackup-navy"
                     : "text-biobackup-ink/50"

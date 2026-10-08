@@ -83,7 +83,7 @@ export default function Footer() {
               escribir /panel/login a mano frente al cliente. */}
           <Link
             href="/panel/productos"
-            className="rounded-full border border-white/30 bg-white/10 px-5 py-2 text-xs font-bold text-white backdrop-blur transition hover:bg-white/20"
+            className="inline-flex min-h-[44px] items-center rounded-full border border-white/30 bg-white/10 px-5 py-2 text-xs font-bold text-white backdrop-blur transition hover:bg-white/20"
           >
             Panel de administración →
           </Link>

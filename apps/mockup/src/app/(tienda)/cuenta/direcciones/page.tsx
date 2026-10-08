@@ -84,7 +84,7 @@ export default function DireccionesPage() {
       ) : (
         <button
           onClick={() => setFormAbierto(true)}
-          className="mt-4 rounded-full border border-biobackup-navy/20 px-5 py-2 text-sm font-semibold text-biobackup-navy transition hover:border-biobackup-blue hover:text-biobackup-blue"
+          className="mt-4 min-h-[44px] rounded-full border border-biobackup-navy/20 px-5 py-2 text-sm font-semibold text-biobackup-navy transition hover:border-biobackup-blue hover:text-biobackup-blue"
         >
           + Agregar dirección
         </button>

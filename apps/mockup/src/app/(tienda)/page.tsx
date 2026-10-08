@@ -45,7 +45,7 @@ function Titulo({ children, enlace }: { children: React.ReactNode; enlace?: { hr
       {enlace && (
         <Link
           href={enlace.href}
-          className="shrink-0 rounded-full bg-biobackup-blue/10 px-4 py-2 text-sm font-semibold text-biobackup-blue transition hover:bg-biobackup-blue hover:text-white"
+          className="inline-flex min-h-[44px] shrink-0 items-center rounded-full bg-biobackup-blue/10 px-4 py-2 text-sm font-semibold text-biobackup-blue transition hover:bg-biobackup-blue hover:text-white"
         >
           {enlace.texto}
         </Link>

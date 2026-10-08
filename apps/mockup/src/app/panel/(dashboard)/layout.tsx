@@ -1,5 +1,5 @@
 import Link from "next/link";
-import PanelSidebar from "@/components/panel-sidebar";
+import PanelSidebar, { PanelNavMovil } from "@/components/panel-sidebar";
 
 export default function DashboardLayout({
   children,
@@ -17,7 +17,7 @@ export default function DashboardLayout({
           página más ancha que la pantalla en el celular. */}
       <div className="min-w-0 flex-1">
         <header className="flex items-center justify-between border-b border-black/[0.06] bg-white px-5 py-3">
-          <Link href="/panel/productos" className="text-sm font-semibold text-black/70 sm:hidden">
+          <Link href="/panel/productos" className="flex min-h-[44px] items-center text-sm font-semibold text-black/70 sm:hidden">
             BioBackup — Panel
           </Link>
           <span className="hidden text-sm text-black/40 sm:inline">
@@ -27,9 +27,10 @@ export default function DashboardLayout({
             <div className="flex h-7 w-7 items-center justify-center rounded-full bg-biobackup-navy text-xs font-bold text-white">
               A
             </div>
-            <span className="text-sm text-black/60">admin@biobackup.mx</span>
+            <span className="hidden text-sm text-black/60 min-[400px]:inline">admin@biobackup.mx</span>
           </div>
         </header>
+        <PanelNavMovil />
         <main className="p-5">{children}</main>
       </div>
     </div>

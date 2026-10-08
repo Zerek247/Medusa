@@ -58,8 +58,11 @@ export default function CarritoPage() {
 
       <div className="mt-6 divide-y divide-biobackup-navy/10 rounded-xl border border-biobackup-navy/10 bg-surface">
         {lineas.map((l) => (
-          <div key={l.slug} className="flex items-center gap-4 p-4">
-            <div className="flex-1">
+          <div
+            key={l.slug}
+            className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-4"
+          >
+            <div className="min-w-0 sm:flex-1">
               <p className="text-sm font-medium text-biobackup-ink">
                 {l.nombre}
               </p>
@@ -67,31 +70,35 @@ export default function CarritoPage() {
                 {formatoMXN(l.precio)} c/u
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between gap-2 sm:justify-end sm:gap-4">
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => cambiarCantidad(l.slug, l.cantidad - 1)}
+                  aria-label="Disminuir cantidad"
+                  className="h-10 w-10 rounded-full border border-biobackup-navy/20 text-biobackup-ink hover:border-biobackup-blue"
+                >
+                  −
+                </button>
+                <span className="w-8 text-center text-sm">{l.cantidad}</span>
+                <button
+                  onClick={() => cambiarCantidad(l.slug, l.cantidad + 1)}
+                  aria-label="Aumentar cantidad"
+                  className="h-10 w-10 rounded-full border border-biobackup-navy/20 text-biobackup-ink hover:border-biobackup-blue"
+                >
+                  +
+                </button>
+              </div>
+              <p className="min-w-0 text-right text-sm font-semibold text-biobackup-ink sm:w-24">
+                {formatoMXN(l.precio * l.cantidad)}
+              </p>
               <button
-                onClick={() => cambiarCantidad(l.slug, l.cantidad - 1)}
-                className="h-7 w-7 rounded-full border border-biobackup-navy/20 text-biobackup-ink hover:border-biobackup-blue"
+                onClick={() => quitar(l.slug)}
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-biobackup-ink/40 hover:text-red-600"
+                aria-label="Quitar"
               >
-                −
-              </button>
-              <span className="w-6 text-center text-sm">{l.cantidad}</span>
-              <button
-                onClick={() => cambiarCantidad(l.slug, l.cantidad + 1)}
-                className="h-7 w-7 rounded-full border border-biobackup-navy/20 text-biobackup-ink hover:border-biobackup-blue"
-              >
-                +
+                ✕
               </button>
             </div>
-            <p className="w-24 text-right text-sm font-semibold text-biobackup-ink">
-              {formatoMXN(l.precio * l.cantidad)}
-            </p>
-            <button
-              onClick={() => quitar(l.slug)}
-              className="text-biobackup-ink/40 hover:text-red-600"
-              aria-label="Quitar"
-            >
-              ✕
-            </button>
           </div>
         ))}
       </div>

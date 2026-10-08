@@ -51,7 +51,7 @@ export default function ColaFallidosPanel() {
               <button
                 onClick={() => reintentar(t.orden)}
                 disabled={reintentando === t.orden}
-                className="mt-3 rounded-lg bg-biobackup-navy px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-biobackup-navyLight disabled:opacity-60"
+                className="mt-3 min-h-[44px] rounded-lg bg-biobackup-navy px-4 py-2 text-xs font-semibold text-white transition hover:bg-biobackup-navyLight disabled:opacity-60"
               >
                 {reintentando === t.orden ? "Reintentando..." : "Reintentar"}
               </button>

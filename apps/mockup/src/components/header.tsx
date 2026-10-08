@@ -23,17 +23,17 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 px-3 pt-3 sm:px-5">
       <div className="mx-auto max-w-6xl rounded-3xl border border-white/60 bg-surface/75 shadow-[0_12px_40px_-16px_rgba(3,80,136,0.45)] backdrop-blur-xl dark:border-white/10">
-        <div className="flex items-center justify-between gap-3 px-4 py-2.5 sm:px-5">
+        <div className="flex items-center justify-between gap-2 px-3 py-2 sm:gap-3 sm:px-5 sm:py-2.5">
           {/* Logo sin fondo: dos versiones del mismo PNG transparente. La de
               modo noche tiene el azul marino aclarado para que "Bio" y los
               puntos oscuros se lean sobre el fondo oscuro. */}
-          <Link href="/" className="flex shrink-0 items-center" aria-label="BioBackup — Equipo médico + consumibles">
+          <Link href="/" className="flex min-h-[44px] shrink-0 items-center" aria-label="BioBackup — Equipo médico + consumibles">
             <Image
               src="/logo/biobackup-horizontal.png"
               alt="BioBackup — Equipo médico + consumibles"
               width={200}
               height={78}
-              className="h-11 w-auto dark:hidden sm:h-12"
+              className="h-8 w-auto dark:hidden min-[360px]:h-9 min-[400px]:h-10 sm:h-12"
               priority
             />
             <Image
@@ -42,7 +42,7 @@ export default function Header() {
               aria-hidden="true"
               width={200}
               height={78}
-              className="hidden h-11 w-auto dark:block sm:h-12"
+              className="hidden h-8 w-auto min-[360px]:h-9 min-[400px]:h-10 dark:block sm:h-12"
               priority
             />
           </Link>
@@ -66,7 +66,7 @@ export default function Header() {
             })}
           </nav>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-1.5 sm:gap-2.5">
             <Link
               href="/rastreo"
               className="hidden rounded-full px-3 py-2 text-sm font-semibold text-biobackup-ink/75 transition hover:bg-biobackup-blue/10 hover:text-biobackup-blue xl:block"
@@ -75,13 +75,13 @@ export default function Header() {
             </Link>
             <Link
               href="/cuenta"
-              className="hidden rounded-full px-3 py-2 text-sm font-semibold text-biobackup-ink/75 transition hover:bg-biobackup-blue/10 hover:text-biobackup-blue sm:block"
+              className="hidden min-h-[44px] items-center rounded-full px-3 py-2 text-sm font-semibold text-biobackup-ink/75 transition hover:bg-biobackup-blue/10 hover:text-biobackup-blue sm:inline-flex"
             >
               Mi cuenta
             </Link>
             <Link
               href="/carrito"
-              className="relative flex items-center gap-1.5 rounded-full bg-biobackup-navy px-4 py-2.5 text-sm font-semibold text-white"
+              className="relative flex h-11 items-center gap-1.5 rounded-full bg-biobackup-navy px-3 text-sm font-semibold text-white sm:px-4"
             >
               <svg
                 className="h-4 w-4"
@@ -105,7 +105,7 @@ export default function Header() {
             </Link>
             <ThemeToggle />
             <button
-              className="rounded-full p-2 text-biobackup-ink lg:hidden"
+              className="flex h-11 w-11 items-center justify-center rounded-full text-biobackup-ink lg:hidden"
               onClick={() => setMenuAbierto((v) => !v)}
               aria-label="Abrir menú"
             >
@@ -124,15 +124,15 @@ export default function Header() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setMenuAbierto(false)}
-                  className="rounded-xl px-3 py-2.5 hover:bg-biobackup-blue/10"
+                  className="rounded-xl px-3 py-3 hover:bg-biobackup-blue/10"
                 >
                   {item.label}
                 </Link>
               ))}
-              <Link href="/rastreo" onClick={() => setMenuAbierto(false)} className="rounded-xl px-3 py-2.5 hover:bg-biobackup-blue/10">
+              <Link href="/rastreo" onClick={() => setMenuAbierto(false)} className="rounded-xl px-3 py-3 hover:bg-biobackup-blue/10">
                 Rastrear pedido
               </Link>
-              <Link href="/cuenta" onClick={() => setMenuAbierto(false)} className="rounded-xl px-3 py-2.5 hover:bg-biobackup-blue/10">
+              <Link href="/cuenta" onClick={() => setMenuAbierto(false)} className="rounded-xl px-3 py-3 hover:bg-biobackup-blue/10">
                 Mi cuenta
               </Link>
             </nav>

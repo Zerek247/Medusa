@@ -38,13 +38,13 @@ export default function LoginPanelPage() {
           <input
             type="email"
             defaultValue="admin@biobackup.mx"
-            className="w-full rounded-lg border border-black/10 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-biobackup-blue"
+            className="w-full rounded-lg border border-black/10 bg-white min-h-[44px] px-3 py-2.5 text-sm outline-none transition focus:border-biobackup-blue"
             placeholder="Email"
           />
           <input
             type="password"
             defaultValue="••••••••"
-            className="w-full rounded-lg border border-black/10 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-biobackup-blue"
+            className="w-full rounded-lg border border-black/10 bg-white min-h-[44px] px-3 py-2.5 text-sm outline-none transition focus:border-biobackup-blue"
             placeholder="Contraseña"
           />
           <button

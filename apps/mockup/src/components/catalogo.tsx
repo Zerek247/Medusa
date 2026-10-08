@@ -30,7 +30,7 @@ export default function Catalogo({
         <div className="flex flex-wrap gap-2">
           <Link
             href="/tienda"
-            className={`rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${
+            className={`inline-flex min-h-[44px] items-center rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${
               !categoriaActiva
                 ? "border-biobackup-navy bg-biobackup-navy text-white"
                 : "border-biobackup-navy/20 text-biobackup-ink hover:border-biobackup-blue"
@@ -42,7 +42,7 @@ export default function Catalogo({
             <Link
               key={c.slug}
               href={`/tienda/${c.slug}`}
-              className={`rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${
+              className={`inline-flex min-h-[44px] items-center rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${
                 categoriaActiva === c.slug
                   ? "border-biobackup-navy bg-biobackup-navy text-white"
                   : "border-biobackup-navy/20 text-biobackup-ink hover:border-biobackup-blue"

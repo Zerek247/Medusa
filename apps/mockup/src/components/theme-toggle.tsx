@@ -31,11 +31,11 @@ export default function ThemeToggle() {
       onClick={alternar}
       aria-label={oscuro ? "Cambiar a modo normal" : "Cambiar a modo noche"}
       title={oscuro ? "Modo normal" : "Modo noche"}
-      className="group relative flex h-10 w-[4.5rem] items-center rounded-full border border-biobackup-navy/15 bg-gradient-to-r from-biobackup-skyLight/70 to-biobackup-teal/40 p-1 shadow-inner transition dark:from-biobackup-navy/60 dark:to-biobackup-blue/40 dark:border-white/15"
+      className="group relative flex h-11 w-14 shrink-0 items-center rounded-full border border-biobackup-navy/15 sm:w-[4.5rem] bg-gradient-to-r from-biobackup-skyLight/70 to-biobackup-teal/40 p-1 shadow-inner transition dark:from-biobackup-navy/60 dark:to-biobackup-blue/40 dark:border-white/15"
     >
       <span
-        className={`flex h-8 w-8 items-center justify-center rounded-full bg-surface text-biobackup-navy shadow-md transition-transform duration-300 ease-out dark:text-biobackup-skyLight ${
-          listo && oscuro ? "translate-x-8" : "translate-x-0"
+        className={`flex h-9 w-9 items-center justify-center rounded-full bg-surface text-biobackup-navy shadow-md transition-transform duration-300 ease-out dark:text-biobackup-skyLight ${
+          listo && oscuro ? "translate-x-3 sm:translate-x-7" : "translate-x-0"
         }`}
       >
         {oscuro ? (
