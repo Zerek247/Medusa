@@ -33,7 +33,7 @@ export default function Footer() {
               Bio<span className="text-biobackup-skyLight">Backup</span>
             </p>
             <p className="mt-3 text-sm leading-relaxed text-white/70">
-              Equipo médico y consumibles para consultorio y hospital.
+              Equipo médico y consumibles para hospitales y consultorios.
             </p>
           </div>
 

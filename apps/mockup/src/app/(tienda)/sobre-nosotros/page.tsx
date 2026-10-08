@@ -118,10 +118,10 @@ export default function SobreNosotrosPage() {
               Sobre BioBackup
             </p>
             <h1 className="mx-auto mt-3 max-w-3xl text-3xl font-extrabold leading-tight text-white sm:text-5xl">
-              Respaldando la salud con soluciones confiables
+              Vivimos para respaldarte
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-base italic text-white/85">
-              Innovación y compromiso.
+              Respaldando la salud con soluciones confiables, innovación y compromiso.
             </p>
           </div>
         </div>

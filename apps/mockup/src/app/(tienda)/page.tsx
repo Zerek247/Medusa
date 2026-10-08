@@ -21,7 +21,7 @@ const BENEFICIOS = [
   },
   {
     titulo: "Envío rastreado",
-    texto: "Guía y estatus de cada pedido, de la bodega a tu consultorio.",
+    texto: "Guía y estatus de cada pedido, de la bodega a tu hospital.",
     color: "from-biobackup-blue to-biobackup-teal",
     icono: "M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.25h-5.322c-.55 0-.988.394-1.152.913l-2.632 6.25c-.11.263-.164.549-.164.837v.75c0 .621.504 1.125 1.125 1.125H2.25",
   },
@@ -83,7 +83,7 @@ export default function Home() {
               Equipo médico + consumibles
             </p>
             <h1 className="reveal mt-5 max-w-2xl text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-6xl" style={{ ["--d" as string]: 1 }}>
-              Lo que tu consultorio necesita,{" "}
+              Lo que tu hospital necesita,{" "}
               <span className="bg-gradient-to-r from-biobackup-skyLight to-biobackup-green bg-clip-text text-transparent">
                 sin vueltas.
               </span>
