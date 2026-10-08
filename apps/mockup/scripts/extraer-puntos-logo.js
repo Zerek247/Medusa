@@ -1,5 +1,5 @@
 // Genera src/lib/puntos-logo.ts a partir del logo real
-// (assets/logo/biobackup-vertical.jpeg): detecta cada puntito por color
+// (assets/logo/biobackup-horizontal.png, solo la parte de los puntos): detecta cada puntito por color
 // (flood fill sobre los píxeles que no son fondo blanco), agrupa cada
 // grupo de píxeles conectados en un "blob", y calcula su centro / radio /
 // color promedio. Si el archivo del logo cambia, vuelve a correr esto
@@ -14,21 +14,29 @@ const sharp = require(
 );
 
 const RAIZ = path.join(__dirname, "..", "..", "..");
-const RUTA_LOGO = path.join(RAIZ, "assets", "logo", "biobackup-vertical.jpeg");
+const RUTA_LOGO = path.join(RAIZ, "assets", "logo", "biobackup-horizontal.png");
 const RUTA_SALIDA = path.join(__dirname, "..", "src", "lib", "puntos-logo.ts");
 
-// Del alto total de la imagen (463px), medido fila por fila dónde
-// empieza de verdad la letra "B" de "Bio" (el ancho de la franja de
-// color salta de ~240px a 330+px justo ahí): es la fila 383, no el 76%
-// que se había asumido antes -- ese recorte anterior sí cortaba puntos
-// reales del rizo inferior. 383/463 ≈ 0.827.
-const ALTO_UTIL_FRACCION = 383 / 463;
+// El logo es horizontal: los puntos ocupan el ~33% izquierdo (ya sin márgenes
+// transparentes) y la palabra "BioBackup" el resto -- se recorta justo antes
+// de la "B". Se reduce a la mitad para que el SVG de la pantalla de carga
+// mida lo mismo que antes (~360px de ancho).
+const FRACCION_ANCHO_PUNTOS = 0.333;
+const ESCALA = 0.5;
 const MAX_RETRASO_MS = 330; // debe coincidir con MAX_RETRASO_MS en logo-loader.tsx
 
 async function main() {
-  const { data, info } = await sharp(RUTA_LOGO).raw().toBuffer({ resolveWithObject: true });
+  const recortado = await sharp(RUTA_LOGO).trim().toBuffer();
+  const meta = await sharp(recortado).metadata();
+  const { data, info } = await sharp(recortado)
+    .extract({ left: 0, top: 0, width: Math.round(meta.width * FRACCION_ANCHO_PUNTOS), height: meta.height })
+    .flatten({ background: "#ffffff" })
+    .resize({ width: Math.round(meta.width * FRACCION_ANCHO_PUNTOS * ESCALA), kernel: "lanczos3" })
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
   const { width, height, channels } = info;
-  const altoUtil = Math.floor(height * ALTO_UTIL_FRACCION);
+  const altoUtil = height;
 
   function esFondo(r, g, b) {
     return r > 232 && g > 232 && b > 232;
@@ -97,25 +105,7 @@ async function main() {
     }
   }
 
-  // Cerca del fondo del recorte, los dos rizos (izquierdo y derecho) están
-  // bien separados -- no debería haber NINGÚN punto real justo en medio.
-  // El puntito de la "i" de "Bio" cae exactamente ahí (es lo único que
-  // sobrevive del texto con este recorte), así que se descarta por
-  // posición en vez de por distancia a otros blobs (probamos eso primero
-  // y era demasiado agresivo: borraba puntos reales de las zonas donde
-  // el patrón real también es disperso, como los brazos de arriba).
-  const ZONA_MUERTA_X = [95, 195];
-  const ZONA_MUERTA_Y_DESDE = 330;
-  const blobsFiltrados = blobs.filter((b) => {
-    const enZonaMuerta =
-      b.y >= ZONA_MUERTA_Y_DESDE &&
-      b.x >= ZONA_MUERTA_X[0] &&
-      b.x <= ZONA_MUERTA_X[1];
-    return !enZonaMuerta;
-  });
-  console.log(
-    `Descartados ${blobs.length - blobsFiltrados.length} blob(s) en la zona muerta central (ruido de texto).`
-  );
+  const blobsFiltrados = blobs;
 
   const minY = Math.min(...blobsFiltrados.map((b) => b.y));
   const maxY = Math.max(...blobsFiltrados.map((b) => b.y));
@@ -132,7 +122,7 @@ async function main() {
   });
 
   const ts = `// Posiciones EXACTAS de los puntos del logo real, extraídas del propio
-// archivo (assets/logo/biobackup-vertical.jpeg) con detección de blobs
+// archivo (assets/logo/biobackup-horizontal.png) con detección de blobs
 // por color -- no son una aproximación matemática, son las coordenadas
 // reales de cada punto del logo. Generado con
 // apps/mockup/scripts/extraer-puntos-logo.js -- si el logo cambia, corre

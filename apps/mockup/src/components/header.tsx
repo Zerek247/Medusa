@@ -26,11 +26,11 @@ export default function Header() {
         <div className="flex items-center justify-between gap-3 px-4 py-2.5 sm:px-5">
           <Link href="/" className="flex shrink-0 items-center rounded-2xl bg-white px-2.5 py-1 dark:bg-white">
             <Image
-              src="/logo/biobackup-horizontal.jpeg"
+              src="/logo/biobackup-horizontal.png"
               alt="BioBackup — Equipo médico + consumibles"
-              width={180}
-              height={56}
-              className="h-9 w-auto sm:h-10"
+              width={200}
+              height={78}
+              className="h-10 w-auto sm:h-11"
               priority
             />
           </Link>

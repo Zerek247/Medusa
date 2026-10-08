@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   title: "BioBackup — Equipo médico + consumibles",
   description:
     "Maqueta visual de la tienda y el panel de administración de BioBackup.",
-  icons: { icon: "/logo/biobackup-vertical.jpeg" },
+  icons: { icon: "/logo/biobackup-icono.png" },
 };
 
 // Se ejecuta ANTES de que React pinte nada: si la persona había elegido
