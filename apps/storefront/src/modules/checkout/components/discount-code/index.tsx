@@ -64,10 +64,10 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
               className="txt-medium text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
               data-testid="add-discount-button"
             >
-              Add Promotion Code(s)
+              Agregar código promocional
             </button>
 
-            {/* <Tooltip content="You can add multiple promotion codes">
+            {/* <Tooltip content="Puedes agregar varios códigos promocionales">
               <InformationCircleSolid color="var(--fg-muted)" />
             </Tooltip> */}
           </Label>
@@ -87,7 +87,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
                   variant="secondary"
                   data-testid="discount-apply-button"
                 >
-                  Apply
+                  Aplicar
                 </SubmitButton>
               </div>
 
@@ -138,7 +138,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
                           )}
                         )
                         {/* {promotion.is_automatic && (
-                          <Tooltip content="This promotion is automatically applied">
+                          <Tooltip content="Esta promoción se aplica automáticamente">
                             <InformationCircleSolid className="inline text-zinc-400" />
                           </Tooltip>
                         )} */}
@@ -158,7 +158,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
                       >
                         <Trash size={14} />
                         <span className="sr-only">
-                          Remove discount code from order
+                          Quitar código de descuento del pedido
                         </span>
                       </button>
                     )}

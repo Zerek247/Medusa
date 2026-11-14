@@ -17,9 +17,9 @@ const Login = ({ setCurrentView }: Props) => {
       className="max-w-sm w-full flex flex-col items-center"
       data-testid="login-page"
     >
-      <h1 className="text-large-semi uppercase mb-6">Welcome back</h1>
+      <h1 className="text-large-semi uppercase mb-6">Bienvenido de nuevo</h1>
       <p className="text-center text-base-regular text-ui-fg-base mb-8">
-        Sign in to access an enhanced shopping experience.
+        Inicia sesión para ver tus pedidos y direcciones.
       </p>
       {message?.state === "verification_required" && (
         <div
@@ -27,22 +27,22 @@ const Login = ({ setCurrentView }: Props) => {
           data-testid="login-verification-message"
         >
           We sent a verification link to <strong>{message.email}</strong>.
-          Please verify your email, then sign in.
+          Verifica tu correo y luego inicia sesión.
         </div>
       )}
       <form className="w-full" action={formAction}>
         <div className="flex flex-col w-full gap-y-2">
           <Input
-            label="Email"
+            label="Correo"
             name="email"
             type="email"
-            title="Enter a valid email address."
+            title="Ingresa un correo válido."
             autoComplete="email"
             required
             data-testid="email-input"
           />
           <Input
-            label="Password"
+            label="Contraseña"
             name="password"
             type="password"
             autoComplete="current-password"
@@ -55,7 +55,7 @@ const Login = ({ setCurrentView }: Props) => {
           data-testid="login-error-message"
         />
         <SubmitButton data-testid="sign-in-button" className="w-full mt-6">
-          Sign in
+          Iniciar sesión
         </SubmitButton>
       </form>
       <span className="text-center text-ui-fg-base text-small-regular mt-6">
@@ -65,7 +65,7 @@ const Login = ({ setCurrentView }: Props) => {
           className="underline"
           data-testid="register-button"
         >
-          Join us
+          Regístrate
         </button>
         .
       </span>

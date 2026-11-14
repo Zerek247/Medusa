@@ -27,7 +27,9 @@ const Item = ({ item, currencyCode }: ItemProps) => {
         >
           {item.product_title}
         </Text>
-        <LineItemOptions variant={item.variant} data-testid="product-variant" />
+        {item.variant_title && item.variant_title !== item.product_title && (
+          <LineItemOptions variant={item.variant} data-testid="product-variant" />
+        )}
       </Table.Cell>
 
       <Table.Cell className="!pr-0">

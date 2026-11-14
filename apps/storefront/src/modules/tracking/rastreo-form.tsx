@@ -1,7 +1,7 @@
 "use client"
 
 import { rastrearPedido } from "@lib/data/tracking"
-import { Button, Heading, Text } from "@modules/common/components/ui"
+import { Heading, Text } from "@modules/common/components/ui"
 import Input from "@modules/common/components/input"
 import { useActionState } from "react"
 
@@ -12,8 +12,9 @@ const RastreoForm = () => {
   })
 
   return (
-    <div className="content-container py-12 max-w-lg">
-      <Heading level="h1" className="text-2xl-semi mb-2">
+    <div className="mx-auto max-w-lg px-4 py-10 sm:px-6">
+      <span className="mb-2 block h-1.5 w-12 rounded-full bg-gradient-to-r from-biobackup-navy via-biobackup-blue to-biobackup-teal" />
+      <Heading level="h1" className="mb-2 text-3xl font-extrabold tracking-tight text-biobackup-ink">
         Rastrea tu pedido
       </Heading>
       <Text className="text-ui-fg-subtle mb-8">
@@ -21,12 +22,17 @@ const RastreoForm = () => {
         correo con el que compraste.
       </Text>
 
-      <form action={formAction} className="flex flex-col gap-4">
+      <form action={formAction} className="flex flex-col gap-4 p-5 rounded-3xl border border-white/70 bg-surface/80 shadow-[0_8px_30px_-14px_rgba(3,80,136,0.3)] backdrop-blur dark:border-white/10 sm:p-6">
         <Input label="Número de pedido" name="numero" required data-testid="rastreo-numero-input" />
         <Input label="Correo" name="email" type="email" required data-testid="rastreo-email-input" />
-        <Button type="submit" isLoading={isPending} data-testid="rastreo-submit-button">
-          Buscar pedido
-        </Button>
+        <button
+          type="submit"
+          disabled={isPending}
+          className="min-h-[44px] w-full rounded-full bg-biobackup-navy px-6 py-3 text-sm font-semibold text-white disabled:opacity-60"
+          data-testid="rastreo-submit-button"
+        >
+          {isPending ? "Buscando..." : "Buscar pedido"}
+        </button>
       </form>
 
       {state.error && (
@@ -36,7 +42,7 @@ const RastreoForm = () => {
       )}
 
       {state.resultado && (
-        <div className="mt-10 border border-ui-border-base rounded-rounded p-6" data-testid="rastreo-resultado">
+        <div className="mt-10 p-6 rounded-3xl border border-white/70 bg-surface/80 shadow-[0_8px_30px_-14px_rgba(3,80,136,0.3)] backdrop-blur dark:border-white/10" data-testid="rastreo-resultado">
           <div className="flex items-center justify-between mb-4">
             <Text className="txt-large-plus">Pedido #{state.resultado.numero}</Text>
             <Text className="text-ui-fg-subtle txt-small">

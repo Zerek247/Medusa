@@ -41,17 +41,17 @@ const VerifyAccount = () => {
 
       {state === "verifying" && (
         <p className="text-base-regular text-ui-fg-base">
-          Verifying your email...
+          Verificando tu correo...
         </p>
       )}
 
       {state === "success" && (
         <>
           <p className="text-base-regular text-ui-fg-base">
-            Your email is verified. You can now sign in to your account.
+            Tu correo está verificado. Ya puedes iniciar sesión.
           </p>
           <LocalizedClientLink href="/account">
-            <Button variant="primary">Go to sign in</Button>
+            <Button variant="primary">Ir a iniciar sesión</Button>
           </LocalizedClientLink>
         </>
       )}
@@ -63,7 +63,7 @@ const VerifyAccount = () => {
             a new verification email.
           </p>
           <LocalizedClientLink href="/account">
-            <Button variant="secondary">Go to sign in</Button>
+            <Button variant="secondary">Ir a iniciar sesión</Button>
           </LocalizedClientLink>
         </>
       )}
