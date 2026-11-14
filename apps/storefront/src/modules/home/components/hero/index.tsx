@@ -40,10 +40,11 @@ const Hero = () => {
             className="reveal mt-5 max-w-2xl text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-6xl"
             style={{ ["--d" as string]: 1 }}
           >
-            Lo que tu hospital necesita,{" "}
+            Lo que tu{" "}
             <span className="bg-gradient-to-r from-biobackup-skyLight to-biobackup-green bg-clip-text text-transparent">
-              sin vueltas.
-            </span>
+              consultorio
+            </span>{" "}
+            necesita.
           </h1>
           <p
             className="reveal mt-5 max-w-xl text-base text-white/85 sm:text-lg"

@@ -249,3 +249,20 @@ h2 {
     @apply text-[32px] leading-[44px] font-semibold;
   }
 }
+
+/* ---- Tipografía: todo Montserrat ----
+   El preset de Medusa (@medusajs/ui-preset) fija "Inter" en sus clases de
+   texto (txt-*, h1-*, h2-*, code-*). Se sobreescriben aquí (mismo peso de
+   selector, más abajo en la hoja) para que la tienda use solo Montserrat.
+   Los títulos h1/h2 siguen con Montserrat Alternates (regla de arriba). */
+:is(
+    [class*="txt-"],
+    [class*="h1-"],
+    [class*="h2-"],
+    [class*="h3-"],
+    [class*="h4-"],
+    [class*="code-"]
+  ):not(h1):not(h2) {
+  font-family: var(--font-montserrat), Montserrat, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
