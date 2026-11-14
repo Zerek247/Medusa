@@ -5,7 +5,6 @@ import { placeOrder } from "@lib/data/cart"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@modules/common/components/ui"
 import { useElements, useStripe } from "@stripe/react-stripe-js"
-import { useParams, useRouter } from "next/navigation"
 import React, { useState } from "react"
 import ErrorMessage from "../error-message"
 
@@ -27,13 +26,6 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
 
   const paymentSession = cart.payment_collection?.payment_sessions?.[0]
 
-  // Fase 6B: en modo demo, el checkout llega hasta esta pantalla y muestra
-  // una confirmación SIMULADA -- nunca se llama a Stripe (ni siquiera con
-  // llaves de prueba). Esto va ANTES del switch por proveedor a propósito:
-  // aplica sin importar qué método de pago esté seleccionado.
-  if (process.env.NEXT_PUBLIC_MODO_DEMO === "true") {
-    return <DemoPaymentButton notReady={notReady} cart={cart} data-testid={dataTestId} />
-  }
 
   switch (true) {
     case isStripeLike(paymentSession?.provider_id):
@@ -53,55 +45,6 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
   }
 }
 
-const DemoPaymentButton = ({
-  cart,
-  notReady,
-  "data-testid": dataTestId,
-}: {
-  cart: HttpTypes.StoreCart
-  notReady: boolean
-  "data-testid"?: string
-}) => {
-  const router = useRouter()
-  const countryCode = useParams().countryCode as string
-  const [cargando, setCargando] = useState(false)
-
-  const confirmar = () => {
-    setCargando(true)
-    // No se llama a placeOrder() ni a Stripe -- se guarda un resumen del
-    // carrito tal cual está y se muestra como si fuera la confirmación
-    // real, sin tocar el backend de pagos ni crear una orden de verdad.
-    sessionStorage.setItem(
-      "biobackup_pedido_demo",
-      JSON.stringify({
-        numero: Math.floor(Math.random() * 900) + 100,
-        fecha: new Date().toISOString(),
-        email: cart.email,
-        total: cart.total,
-        currency_code: cart.currency_code,
-        shipping_address: cart.shipping_address,
-        items: (cart.items || []).map((i) => ({
-          titulo: i.product_title,
-          cantidad: i.quantity,
-          total: i.total,
-        })),
-      })
-    )
-    router.push(`/${countryCode}/pedido-demo-confirmado`)
-  }
-
-  return (
-    <Button
-      disabled={notReady}
-      isLoading={cargando}
-      onClick={confirmar}
-      size="large"
-      data-testid={dataTestId}
-    >
-      Confirmar pedido (demo)
-    </Button>
-  )
-}
 
 const StripePaymentButton = ({
   cart,

@@ -14,28 +14,6 @@ type Props = {
 const Register = ({ setCurrentView }: Props) => {
   const [message, formAction] = useActionState(signup, null)
 
-  // Fase 6B: en modo demo no se permite crear cuentas nuevas (evita que
-  // alguien en la junta deje datos personales reales en un prototipo) --
-  // se deja precargada una sola cuenta demo para mostrar el historial de
-  // pedidos.
-  if (process.env.NEXT_PUBLIC_MODO_DEMO === "true") {
-    return (
-      <div className="max-w-sm flex flex-col items-center" data-testid="register-page-demo-disabled">
-        <h1 className="text-large-semi mb-4">Registro deshabilitado en la demo</h1>
-        <p className="text-center text-base-regular text-ui-fg-subtle mb-6">
-          Este es un prototipo de demostración -- usa la cuenta precargada para ver el
-          historial de pedidos.
-        </p>
-        <div className="w-full bg-ui-bg-subtle border border-ui-border-base rounded-rounded p-4 text-center mb-6">
-          <p className="txt-small-plus">demo@biobackup.mx</p>
-          <p className="txt-small text-ui-fg-subtle">demo1234</p>
-        </div>
-        <button onClick={() => setCurrentView(LOGIN_VIEW.SIGN_IN)} className="underline">
-          Ir a iniciar sesión
-        </button>
-      </div>
-    )
-  }
 
   return (
     <div

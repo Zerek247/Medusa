@@ -101,11 +101,6 @@ export default async function Footer() {
           <Text className="txt-compact-small">
             © {new Date().getFullYear()} BioBackup. Todos los derechos reservados.
           </Text>
-          {process.env.NEXT_PUBLIC_MODO_DEMO === "true" && (
-            <Text className="txt-compact-small italic">
-              Propuesta visual -- no es un sitio en producción
-            </Text>
-          )}
         </div>
       </div>
     </footer>
