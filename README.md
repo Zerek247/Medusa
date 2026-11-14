@@ -570,52 +570,6 @@ nombres específico de haber elegido `/app` como punto de montaje. Se
 corrigió cambiando `admin.path` a `"/panel"` en `medusa-config.ts` (ver
 el comentario ahí) -- el panel ahora vive en `http://localhost:9000/panel`.
 
-## Modo demo (Fase 6B)
-
-`NEXT_PUBLIC_MODO_DEMO=true` en `apps/storefront/.env` activa:
-- Banner permanente ("Prototipo de demostración...") en TODAS las
-  pantallas -- vive en `app/layout.tsx` (la raíz de verdad, fuera de
-  `[countryCode]`), así también se ve en el checkout, que tiene su propio
-  layout.
-- Checkout que llega hasta la pantalla de pago y muestra una confirmación
-  SIMULADA: Stripe ni siquiera se ofrece como opción de pago
-  (`checkout-form/index.tsx` filtra `pp_stripe_*` de
-  `availablePaymentMethods`), y el botón final
-  (`payment-button/index.tsx`, `DemoPaymentButton`) nunca llama a
-  `placeOrder()` -- guarda un resumen del carrito en `sessionStorage` y
-  navega a `/pedido-demo-confirmado`, una pantalla que lo lee y lo muestra
-  como si fuera la confirmación real. No se crea ninguna orden de verdad.
-- Registro de cuentas nuevas deshabilitado
-  (`account/components/register/index.tsx`) -- en su lugar se muestran las
-  credenciales de la cuenta demo precargada.
-- Pie de página con "Propuesta visual -- no es un sitio en producción".
-
-### Cuenta y datos de demostración
-
-```bash
-docker compose exec backend sh -c "cd apps/backend && npx medusa exec ./src/seed/seed-demo.ts"
-docker compose exec backend sh -c "cd apps/backend && npx medusa exec ./src/scripts/crear-cuenta-demo.ts"
-```
-
-- `apps/backend/src/seed/productos-demo.jsonc` -- 8 productos con datos
-  realistas (**editar este archivo con los productos reales cuando
-  lleguen** -- nombre, descripción, precio, existencia, categoría,
-  peso/dimensiones; `imagen` queda en `null` hasta tener las fotos).
-  `seed-demo.ts` lee este archivo, es idempotente por SKU, y NUNCA lo toca
-  el sync de Bind (sus SKUs `DEMO-` no existen en Bind).
-- `crear-cuenta-demo.ts` crea `demo@biobackup.mx` / `demo1234` con 2
-  pedidos ya en su historial (usa `createOrderWorkflow` -- no hay endpoint
-  público para "crear una orden ya pagada", con razón: normalmente eso
-  pasa por un checkout de verdad).
-
-### Recorrido de presentación, verificado en viewport de celular (375×812)
-
-`inicio → categoría → ficha de producto → agregar al carrito → checkout
-(datos fiscales + envío) → confirmación → historial de pedidos` -- las
-correcciones de Fase 6 (branding, `loading.tsx`, filtro de opciones
-Size/Color) se probaron explícitamente en este viewport antes que
-cualquier ajuste de escritorio, por pedido explícito de esta fase.
-
 ## Desplegar en Railway (Fase 6B)
 
 **Aviso importante**: a diferencia del resto de este proyecto (todo
@@ -650,10 +604,8 @@ servicios del mismo proyecto -- no hay que copiarlas a mano.
   idempotentes, seguros de correr en cada deploy, no solo "la primera
   vez"):
   ```bash
-  cd apps/backend/.medusa/server && npx medusa db:migrate && npx medusa exec ./src/scripts/setup-envio-mexico.ts && npx medusa exec ./src/scripts/crear-categorias.ts && npx medusa exec ./src/seed/seed-demo.ts && npx medusa exec ./src/scripts/crear-cuenta-demo.ts && npx medusa start
+  cd apps/backend/.medusa/server && npx medusa db:migrate && npx medusa exec ./src/scripts/setup-envio-mexico.ts && npx medusa exec ./src/scripts/crear-categorias.ts && npx medusa start
   ```
-  (Quita `crear-cuenta-demo.ts`/`seed-demo.ts` de esta línea si el
-  despliegue NO es la variante demo.)
 - **Healthcheck path**: `/health`.
 
 Variables de entorno a capturar en el panel de Railway (Settings →
@@ -668,13 +620,13 @@ Variables):
 | `JWT_SECRET` | genera uno propio (`openssl rand -hex 32`) -- nunca `supersecret` en producción |
 | `COOKIE_SECRET` | igual, uno propio |
 | `STORE_CORS` | URL pública del storefront en Railway |
-| `ADMIN_CORS` | URL pública del backend en Railway (`.../app`) |
+| `ADMIN_CORS` | URL pública del backend en Railway (el panel vive en `/panel`) |
 | `AUTH_CORS` | la unión de las dos anteriores |
-| `WORKER_MODE` | `shared` (un solo servicio de backend en Railway -- no vale la pena separar server/worker en dos servicios de Railway para una demo) |
+| `WORKER_MODE` | `shared` (un solo servicio de backend en Railway -- no vale la pena separar server/worker en dos servicios de Railway) |
 | `BIND_BASE_URL`, `BIND_API_KEY` | URL pública del servicio mock-bind en Railway + la misma key |
 | `SKYDROPX_BASE_URL`, `SKYDROPX_API_TOKEN` | igual, para mock-skydropx |
 | `CFDI_BASE_URL`, `CFDI_API_KEY` | igual, para mock-cfdi |
-| `STRIPE_API_KEY`, `STRIPE_WEBHOOK_SECRET` | tus llaves de PRUEBA de Stripe (si el despliegue no es demo -- en modo demo no hace falta ninguna) |
+| `STRIPE_API_KEY`, `STRIPE_WEBHOOK_SECRET` | tus llaves de PRUEBA de Stripe |
 | `MEDUSA_ADMIN_ONBOARDING_TYPE` | `default` |
 
 Los tres mocks (`apps/mock-bind`, `apps/mock-skydropx`, `apps/mock-cfdi`)
@@ -700,8 +652,7 @@ Variables:
 | `NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY` | corre `mostrar-publishable-key.ts` contra el backend ya desplegado |
 | `NEXT_PUBLIC_DEFAULT_REGION` | `mx` |
 | `NEXT_PUBLIC_BASE_URL` | URL pública del storefront mismo |
-| `NEXT_PUBLIC_STRIPE_KEY` | tu llave pública de prueba (vacío si es modo demo) |
-| `NEXT_PUBLIC_MODO_DEMO` | `true` para la demo |
+| `NEXT_PUBLIC_STRIPE_KEY` | tu llave pública de prueba |
 
 ### Orden recomendado (evita el problema del huevo y la gallina con CORS)
 
@@ -729,7 +680,7 @@ este orden:
    ```bash
    railway run --service backend npx medusa user -e tu@correo.com -p "una-contraseña-fuerte"
    ```
-3. Confirma `https://tu-backend.up.railway.app/app` (admin) y
+3. Confirma `https://tu-backend.up.railway.app/panel` (admin) y
    `https://tu-storefront.up.railway.app/mx` (storefront) cargan.
 4. Recorre el flujo de presentación completo desde tu celular (criterio de
    aceptación de esta fase).
