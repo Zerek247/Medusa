@@ -154,6 +154,11 @@ services:
       - apps/storefront/.env
     environment:
       CI: "true" # ver el comentario junto a "backend" sobre por qué
+      # pnpm 11 reinstala al arrancar si cree que las dependencias están
+      # desactualizadas; la imagen ya las trae instaladas, y esa reinstalación
+      # (copiar desde el almacén en el disco de Windows) falla con ENOMEM.
+      npm_config_verify_deps_before_run: "false"
+      pnpm_config_verify_deps_before_run: "false"
     ports:
       - "8000:8000"
     depends_on:
