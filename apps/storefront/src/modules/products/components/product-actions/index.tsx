@@ -3,7 +3,6 @@
 import { addToCart } from "@lib/data/cart"
 import { useIntersection } from "@lib/hooks/use-in-view"
 import { HttpTypes } from "@medusajs/types"
-import { Button } from "@modules/common/components/ui"
 import Divider from "@modules/common/components/divider"
 import OptionSelect from "@modules/products/components/product-actions/option-select"
 import { isEqual } from "lodash"
@@ -38,6 +37,7 @@ export default function ProductActions({
 
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [isAdding, setIsAdding] = useState(false)
+  const [agregado, setAgregado] = useState(false)
   const countryCode = useParams().countryCode as string
 
   // If there is only 1 variant, preselect the options
@@ -133,6 +133,8 @@ export default function ProductActions({
     })
 
     setIsAdding(false)
+    setAgregado(true)
+    setTimeout(() => setAgregado(false), 1800)
   }
 
   return (
@@ -162,24 +164,35 @@ export default function ProductActions({
 
         <ProductPrice product={product} variant={selectedVariant} />
 
-        {/* Disponibilidad (Fase 6): más visible que solo el texto del
-            botón "Out of stock" -- para equipo médico, saber cuánto hay
-            disponible antes de comprar importa más que en ropa. */}
+        {/* Disponibilidad: para equipo médico, saber cuánto hay disponible
+            antes de comprar importa más que en ropa. */}
         {selectedVariant && (
-          <p className="txt-small" data-testid="stock-availability">
+          <p className="mt-1 text-sm font-medium" data-testid="stock-availability">
             {!selectedVariant.manage_inventory || selectedVariant.allow_backorder ? (
-              <span className="text-ui-fg-subtle">Disponible</span>
+              <span className="flex items-center gap-1.5 text-emerald-700">
+                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                Disponible
+              </span>
+            ) : (selectedVariant.inventory_quantity || 0) > 3 ? (
+              <span className="flex items-center gap-1.5 text-emerald-700">
+                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                En existencia ({selectedVariant.inventory_quantity} disponibles)
+              </span>
             ) : (selectedVariant.inventory_quantity || 0) > 0 ? (
-              <span className="text-ui-fg-subtle">
-                En stock -- {selectedVariant.inventory_quantity} disponible(s)
+              <span className="flex items-center gap-1.5 text-amber-600">
+                <span className="h-2 w-2 rounded-full bg-amber-500" />
+                Últimas {selectedVariant.inventory_quantity} piezas
               </span>
             ) : (
-              <span className="text-ui-fg-error">Sin existencia por el momento</span>
+              <span className="flex items-center gap-1.5 text-red-600">
+                <span className="h-2 w-2 rounded-full bg-red-500" />
+                Sin existencia
+              </span>
             )}
           </p>
         )}
 
-        <Button
+        <button
           onClick={handleAddToCart}
           disabled={
             !inStock ||
@@ -188,17 +201,19 @@ export default function ProductActions({
             isAdding ||
             !isValidVariant
           }
-          variant="primary"
-          className="w-full h-10"
-          isLoading={isAdding}
+          className="mt-4 min-h-[44px] w-full rounded-full bg-biobackup-navy px-8 py-3 text-sm font-semibold text-white transition disabled:cursor-not-allowed disabled:bg-none disabled:bg-biobackup-ink/20 sm:w-auto"
           data-testid="add-product-button"
         >
-          {!selectedVariant && !options
-            ? "Select variant"
+          {isAdding
+            ? "Agregando..."
+            : agregado
+            ? "Agregado ✓"
+            : !selectedVariant && !options
+            ? "Elige una opción"
             : !inStock || !isValidVariant
-            ? "Out of stock"
-            : "Add to cart"}
-        </Button>
+            ? "Sin existencia"
+            : "Agregar al carrito"}
+        </button>
         <MobileActions
           product={product}
           variant={selectedVariant}

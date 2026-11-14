@@ -20,16 +20,35 @@ module.exports = {
         padding: "padding-top padding-right padding-bottom padding-left",
       },
       colors: {
-        // Fase 6: color de marca (teal clínico), para usarlo directo en
-        // componentes propios (banner de demo, insignias) sin depender de
-        // que las variables --fg-interactive/etc. del preset ya lo cubran.
+        // Paleta OFICIAL de la marca (manual de marca del cliente). Si la
+        // marca cambia su paleta, este es el único lugar que hay que
+        // actualizar (y las variables --fg-interactive/etc. de globals.css).
+        //
+        // surface / paper / ink NO son colores fijos: leen variables CSS
+        // (--c-surface, --c-paper, --c-ink, en globals.css) que cambian con
+        // el modo noche, así que casi no hacen falta clases "dark:".
+        surface: "rgb(var(--c-surface) / <alpha-value>)",
+        biobackup: {
+          navy: "#035088", // Principal 1
+          blue: "#008FCD", // Principal 2
+          teal: "#34BEBE", // Principal 3
+          green: "#5FC5A8", // Secundarios
+          slate: "#8BB3C7",
+          skyLight: "#A2DCF0",
+          navyLight: "#0E6FA5", // Derivados (hover/fondos)
+          blueLight: "#4FB6E0",
+          tealLight: "#8FDDC9",
+          ink: "rgb(var(--c-ink) / <alpha-value>)",
+          paper: "rgb(var(--c-paper) / <alpha-value>)",
+        },
+        // Alias de la paleta anterior, apuntando a los azules de marca.
         brand: {
-          50: "#e6f2f0",
-          100: "#c2ddd8",
-          300: "#5c9a90",
-          500: "#0f6659",
-          600: "#0b4d43",
-          700: "#073731",
+          50: "#e6f4fb",
+          100: "#c9e9f6",
+          300: "#4FB6E0",
+          500: "#008FCD",
+          600: "#035088",
+          700: "#02365c",
         },
         grey: {
           0: "#FFFFFF",
@@ -52,6 +71,9 @@ module.exports = {
         rounded: "8px",
         large: "16px",
         circle: "9999px",
+        xl: "1.25rem",
+        "2xl": "1.75rem",
+        "3xl": "2.25rem",
       },
       maxWidth: {
         "8xl": "100rem",
@@ -69,14 +91,23 @@ module.exports = {
         "3xl": "2rem",
       },
       fontFamily: {
+        // Todo el sitio usa Montserrat (tipografía del manual de marca);
+        // la variante Alternates es para los títulos (h1/h2, globals.css).
         sans: [
-          "Inter",
+          "var(--font-montserrat)",
+          "Montserrat",
           "-apple-system",
           "BlinkMacSystemFont",
           "Segoe UI",
           "Roboto",
           "Helvetica Neue",
           "Ubuntu",
+          "sans-serif",
+        ],
+        display: [
+          "var(--font-montserrat-alt)",
+          "var(--font-montserrat)",
+          "Montserrat",
           "sans-serif",
         ],
       },
@@ -150,6 +181,18 @@ module.exports = {
           "0%": { transform: "translateY(-100%)" },
           "100%": { transform: "translateY(0)" },
         },
+        "flotar-lento": {
+          "0%, 100%": { transform: "translate3d(0,0,0) scale(1)" },
+          "50%": { transform: "translate3d(18px,-24px,0) scale(1.06)" },
+        },
+        "flotar-lento-2": {
+          "0%, 100%": { transform: "translate3d(0,0,0) scale(1)" },
+          "50%": { transform: "translate3d(-22px,18px,0) scale(1.08)" },
+        },
+        "subir-suave": {
+          from: { opacity: "0", transform: "translateY(18px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
       },
       animation: {
         ring: "ring 2.2s cubic-bezier(0.5, 0, 0.5, 1) infinite",
@@ -165,6 +208,9 @@ module.exports = {
         enter: "enter 200ms ease-out",
         "slide-in": "slide-in 1.2s cubic-bezier(.41,.73,.51,1.02)",
         leave: "leave 150ms ease-in forwards",
+        "flotar-lento": "flotar-lento 14s ease-in-out infinite",
+        "flotar-lento-2": "flotar-lento-2 18s ease-in-out infinite",
+        "subir-suave": "subir-suave .7s cubic-bezier(.2,.7,.3,1) both",
       },
     },
   },

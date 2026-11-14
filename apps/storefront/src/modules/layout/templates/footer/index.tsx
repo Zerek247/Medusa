@@ -1,108 +1,94 @@
-import { listCategories } from "@lib/data/categories";
-import { Text, clx } from "@modules/common/components/ui";
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
-import LocalizedClientLink from "@modules/common/components/localized-client-link";
+const COLUMNAS = [
+  {
+    titulo: "Tienda",
+    enlaces: [
+      { href: "/store", texto: "Catálogo" },
+      { href: "/promociones", texto: "Promociones" },
+      { href: "/sobre-nosotros", texto: "Sobre nosotros" },
+      { href: "/faq", texto: "Preguntas frecuentes" },
+    ],
+  },
+  {
+    titulo: "Ayuda",
+    enlaces: [
+      { href: "/rastreo", texto: "Rastrear un pedido" },
+      { href: "/account", texto: "Mi cuenta" },
+      { href: "/contacto", texto: "Contacto" },
+    ],
+  },
+]
 
-export default async function Footer() {
-  const productCategories = await listCategories();
+const ENLACE = "transition hover:text-white hover:underline"
 
+export default function Footer() {
   return (
-    <footer className="border-t border-ui-border-base w-full">
-      <div className="content-container flex flex-col w-full">
-        <div className="flex flex-col gap-y-6 xsmall:flex-row items-start justify-between py-40">
-          <div>
-            <LocalizedClientLink
-              href="/"
-              className="txt-compact-xlarge-plus text-ui-fg-subtle hover:text-ui-fg-base"
-            >
-              BioBackup
-            </LocalizedClientLink>
-            <Text className="txt-small text-ui-fg-subtle mt-2 max-w-xs">
-              Equipo médico y de diagnóstico para consultorio y uso clínico.
-            </Text>
+    <footer className="mx-3 mt-20 pb-6 sm:mx-5">
+      <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#04365c] via-biobackup-navy to-[#0a6f9c] text-white shadow-[0_30px_70px_-30px_rgba(3,80,136,0.8)]">
+        <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-biobackup-teal/25 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-28 left-10 h-64 w-64 rounded-full bg-biobackup-blue/30 blur-3xl" />
+
+        <div className="relative grid gap-10 px-7 py-12 sm:px-12 md:grid-cols-4">
+          <div className="md:col-span-1">
+            <p className="text-xl font-extrabold">
+              Bio<span className="text-biobackup-skyLight">Backup</span>
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-white/70">
+              Equipo médico y consumibles para hospitales y consultorios.
+            </p>
           </div>
-          <div className="text-small-regular gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-3">
-            {productCategories && productCategories?.length > 0 && (
-              <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus txt-ui-fg-base">
-                  Categories
-                </span>
-                <ul
-                  className="grid grid-cols-1 gap-2"
-                  data-testid="footer-categories"
-                >
-                  {productCategories?.slice(0, 6).map((c) => {
-                    if (c.parent_category) {
-                      return;
-                    }
 
-                    const children =
-                      c.category_children?.map((child) => ({
-                        name: child.name,
-                        handle: child.handle,
-                        id: child.id,
-                      })) || null;
-
-                    return (
-                      <li
-                        className="flex flex-col gap-2 text-ui-fg-subtle txt-small"
-                        key={c.id}
-                      >
-                        <LocalizedClientLink
-                          className={clx(
-                            "hover:text-ui-fg-base",
-                            children && "txt-small-plus"
-                          )}
-                          href={`/categories/${c.handle}`}
-                          data-testid="category-link"
-                        >
-                          {c.name}
-                        </LocalizedClientLink>
-                        {children && (
-                          <ul className="grid grid-cols-1 ml-3 gap-2">
-                            {children &&
-                              children.map((child) => (
-                                <li key={child.id}>
-                                  <LocalizedClientLink
-                                    className="hover:text-ui-fg-base"
-                                    href={`/categories/${child.handle}`}
-                                    data-testid="category-link"
-                                  >
-                                    {child.name}
-                                  </LocalizedClientLink>
-                                </li>
-                              ))}
-                          </ul>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            )}
-            <div className="flex flex-col gap-y-2">
-              <span className="txt-small-plus txt-ui-fg-base">Ayuda</span>
-              <ul className="grid grid-cols-1 gap-y-2 text-ui-fg-subtle txt-small">
-                <li>
-                  <LocalizedClientLink className="hover:text-ui-fg-base" href="/rastreo">
-                    Rastrear mi pedido
-                  </LocalizedClientLink>
-                </li>
-                <li>
-                  <LocalizedClientLink className="hover:text-ui-fg-base" href="/account">
-                    Mi cuenta
-                  </LocalizedClientLink>
-                </li>
+          {COLUMNAS.map((col) => (
+            <div key={col.titulo}>
+              <p className="text-sm font-bold uppercase tracking-wider text-biobackup-skyLight">
+                {col.titulo}
+              </p>
+              <ul className="mt-4 space-y-2.5 text-sm text-white/75">
+                {col.enlaces.map((e) => (
+                  <li key={e.href}>
+                    <LocalizedClientLink href={e.href} className={ENLACE}>
+                      {e.texto}
+                    </LocalizedClientLink>
+                  </li>
+                ))}
               </ul>
             </div>
+          ))}
+
+          <div>
+            <p className="text-sm font-bold uppercase tracking-wider text-biobackup-skyLight">
+              Contacto
+            </p>
+            <ul className="mt-4 space-y-2.5 text-sm text-white/75">
+              <li>
+                <a href="mailto:Ventas@biobackup.mx" className={ENLACE}>
+                  Ventas@biobackup.mx
+                </a>
+              </li>
+              <li>
+                <a href="tel:+525558330938" className={ENLACE}>
+                  55 5833 0938
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://wa.me/526143143157"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={ENLACE}
+                >
+                  WhatsApp 614 314 3157
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
-        <div className="flex w-full mb-16 justify-between text-ui-fg-muted">
-          <Text className="txt-compact-small">
-            © {new Date().getFullYear()} BioBackup. Todos los derechos reservados.
-          </Text>
+
+        <div className="relative border-t border-white/15 px-6 py-5 text-center text-xs text-white/60">
+          © {new Date().getFullYear()} BioBackup. Todos los derechos reservados.
         </div>
       </div>
     </footer>
-  );
+  )
 }

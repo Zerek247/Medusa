@@ -1,77 +1,92 @@
-// Pestañas de la ficha de producto (Fase 6) -- especificaciones técnicas
-// reales del equipo (SKU, peso, dimensiones) en vez de Material/Country of
-// origin/Type (vacíos siempre para nuestro catálogo, son campos pensados
-// para ropa), y envío/facturación reales del negocio en vez del texto de
-// "easy returns, no questions asked" del starter (no aplica a equipo
-// médico ni es una política que este negocio haya definido).
+// Pestañas de la ficha de producto -- especificaciones técnicas reales del
+// equipo (SKU, peso, dimensiones, categoría) y envío/facturación del
+// negocio. Mismo diseño que la demo.
 "use client"
 
 import { HttpTypes } from "@medusajs/types"
-import Accordion from "./accordion"
+import { useState } from "react"
 
 type ProductTabsProps = {
   product: HttpTypes.StoreProduct
 }
 
+type Tab = "specs" | "envio"
+
 const ProductTabs = ({ product }: ProductTabsProps) => {
-  const tabs = [
-    {
-      label: "Especificaciones técnicas",
-      component: <EspecificacionesTab product={product} />,
-    },
-    {
-      label: "Envío y facturación",
-      component: <EnvioFacturacionTab />,
-    },
-  ]
+  const [tab, setTab] = useState<Tab>("specs")
+
+  const clasePestana = (activa: boolean) =>
+    `min-h-[44px] pb-2 text-sm font-semibold ${
+      activa
+        ? "border-b-2 border-biobackup-navy text-biobackup-navy"
+        : "text-biobackup-ink/50"
+    }`
 
   return (
     <div className="w-full">
-      <Accordion type="multiple">
-        {tabs.map((tab, i) => (
-          <Accordion.Item
-            key={i}
-            title={tab.label}
-            headingSize="medium"
-            value={tab.label}
-          >
-            {tab.component}
-          </Accordion.Item>
-        ))}
-      </Accordion>
+      <div className="flex gap-6 border-b border-biobackup-navy/10" role="tablist">
+        <button
+          role="tab"
+          aria-selected={tab === "specs"}
+          onClick={() => setTab("specs")}
+          className={clasePestana(tab === "specs")}
+        >
+          Especificaciones técnicas
+        </button>
+        <button
+          role="tab"
+          aria-selected={tab === "envio"}
+          onClick={() => setTab("envio")}
+          className={clasePestana(tab === "envio")}
+        >
+          Envío y facturación
+        </button>
+      </div>
+
+      {tab === "specs" ? (
+        <EspecificacionesTab product={product} />
+      ) : (
+        <EnvioFacturacionTab />
+      )}
     </div>
   )
 }
 
 const EspecificacionesTab = ({ product }: ProductTabsProps) => {
   const variante = product.variants?.[0]
-  const requiereRevision = Boolean((product.metadata as any)?.requiere_datos_envio)
+  const requiereRevision = Boolean(
+    (product.metadata as any)?.requiere_datos_envio
+  )
 
   const filas: Array<[string, string]> = [
     ["SKU", variante?.sku || "--"],
     ["Peso", variante?.weight ? `${variante.weight} kg` : "Pendiente de captura"],
     [
-      "Dimensiones (L x A x A)",
+      "Dimensiones",
       variante?.length && variante?.width && variante?.height
-        ? `${variante.length} x ${variante.width} x ${variante.height} cm`
+        ? `${variante.length} × ${variante.width} × ${variante.height} cm`
         : "Pendiente de captura",
     ],
+    ["Categoría", product.categories?.[0]?.name || "--"],
   ]
 
   return (
-    <div className="text-small-regular py-8">
-      <table className="w-full">
+    <div className="text-sm">
+      <table className="mt-4 w-full">
         <tbody>
           {filas.map(([label, valor]) => (
-            <tr key={label} className="border-b border-ui-border-base last:border-0">
-              <td className="py-2 pr-4 font-semibold w-1/3">{label}</td>
-              <td className="py-2 text-ui-fg-subtle">{valor}</td>
+            <tr
+              key={label}
+              className="border-b border-biobackup-navy/5 last:border-0"
+            >
+              <td className="py-2 pr-4 text-biobackup-ink/50">{label}</td>
+              <td className="py-2 font-medium text-biobackup-ink">{valor}</td>
             </tr>
           ))}
         </tbody>
       </table>
       {requiereRevision && (
-        <p className="text-ui-fg-subtle mt-4 txt-small">
+        <p className="mt-4 text-xs text-biobackup-ink/60">
           El costo de envío de este producto se cotiza a mano -- verás la opción
           &quot;Envío por cotizar&quot; en tu compra.
         </p>
@@ -82,23 +97,15 @@ const EspecificacionesTab = ({ product }: ProductTabsProps) => {
 
 const EnvioFacturacionTab = () => {
   return (
-    <div className="text-small-regular py-8">
-      <div className="grid grid-cols-1 gap-y-6">
-        <div>
-          <span className="font-semibold">Envío a todo México</span>
-          <p className="max-w-sm text-ui-fg-subtle">
-            Cotizamos en tiempo real con distintas paqueterías al capturar tu código
-            postal en el checkout. Recibes número de guía y liga de rastreo por correo.
-          </p>
-        </div>
-        <div>
-          <span className="font-semibold">Factura (CFDI)</span>
-          <p className="max-w-sm text-ui-fg-subtle">
-            Captura tus datos fiscales en el checkout si necesitas factura -- si no,
-            recibes tu comprobante de compra de todas formas.
-          </p>
-        </div>
-      </div>
+    <div className="mt-4 space-y-2 text-sm text-biobackup-ink/70">
+      <p>
+        Se factura con CFDI 4.0 — captura tus datos fiscales (RFC, régimen, uso
+        de CFDI) durante el pago.
+      </p>
+      <p>
+        Envío calculado en tiempo real según tu código postal; puedes elegir
+        paquetería y velocidad en el checkout.
+      </p>
     </div>
   )
 }

@@ -26,29 +26,32 @@ const StoreTemplate = async ({
 
   return (
     <div
-      className="flex flex-col small:flex-row small:items-start py-6 content-container"
+      className="mx-auto max-w-6xl px-4 py-8 sm:px-6"
       data-testid="category-container"
     >
-      {/* hideOptionsPicker: nuestro catálogo no tiene variantes por
-          talla/color (cada producto usa una sola opción "Default") -- el
-          filtro de opciones es ruido de la plantilla de ropa del starter,
-          no algo que aplique aquí. */}
-      <RefinementList sortBy={sort} hideOptionsPicker />
-      <div className="w-full">
-        <div className="mb-4 flex flex-col small:flex-row small:items-center small:justify-between gap-4">
-          <h1 className="text-2xl-semi" data-testid="store-page-title">
-            Catálogo
-          </h1>
-          <SearchBar />
-        </div>
+      <span className="mb-2 block h-1.5 w-12 rounded-full bg-gradient-to-r from-biobackup-navy via-biobackup-blue to-biobackup-teal" />
+      <h1
+        className="text-3xl font-extrabold tracking-tight text-biobackup-ink sm:text-4xl"
+        data-testid="store-page-title"
+      >
+        Catálogo
+      </h1>
+
+      <div className="mt-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <CategoryPills categories={categories || []} />
-        {/* Sin <Suspense> a propósito -- ver el mismo hallazgo (Fase 4) en
-            products/templates/index.tsx: en este entorno (Next.js 15.5.21 +
-            Turbopack, dev) un <Suspense> aquí deja el fallback (los
-            renglones vacíos de SkeletonProductGrid) permanentemente en su
-            lugar mientras el contenido real termina apareciendo FUERA de
-            <main>, después del footer. StoreTemplate ya es un Server
-            Component async -- await directo, sin boundary de streaming. */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <SearchBar />
+          {/* hideOptionsPicker: nuestro catálogo no tiene variantes por
+              talla/color (cada producto usa una sola opción "Default"). */}
+          <RefinementList sortBy={sort} hideOptionsPicker />
+        </div>
+      </div>
+
+      {/* Sin <Suspense> a propósito -- en este entorno (Next.js 15.5.21 +
+          Turbopack, dev) un <Suspense> aquí deja el fallback atascado y el
+          contenido real aparece fuera de <main>. StoreTemplate ya es un
+          Server Component async -- await directo, sin boundary. */}
+      <div className="mt-6">
         <PaginatedProducts
           sortBy={sort}
           page={pageNumber}

@@ -1,7 +1,5 @@
 "use client"
 
-import FilterRadioGroup from "@modules/common/components/filter-radio-group"
-
 export type SortOptions = "price_asc" | "price_desc" | "created_at"
 
 type SortProductsProps = {
@@ -11,18 +9,9 @@ type SortProductsProps = {
 }
 
 const sortOptions = [
-  {
-    value: "created_at",
-    label: "Latest Arrivals",
-  },
-  {
-    value: "price_asc",
-    label: "Price: Low -> High",
-  },
-  {
-    value: "price_desc",
-    label: "Price: High -> Low",
-  },
+  { value: "created_at", label: "Más recientes" },
+  { value: "price_asc", label: "Precio: menor a mayor" },
+  { value: "price_desc", label: "Precio: mayor a menor" },
 ]
 
 const SortProducts = ({
@@ -30,18 +19,21 @@ const SortProducts = ({
   sortBy,
   setQueryParams,
 }: SortProductsProps) => {
-  const handleChange = (value: string) => {
-    setQueryParams("sortBy", value as SortOptions)
-  }
-
   return (
-    <FilterRadioGroup
-      title="Sort by"
-      items={sortOptions}
-      value={sortBy}
-      handleChange={handleChange}
-      data-testid={dataTestId}
-    />
+    <label className="flex items-center gap-2 text-sm" data-testid={dataTestId}>
+      <span className="font-semibold text-biobackup-ink/60">Ordenar</span>
+      <select
+        value={sortBy}
+        onChange={(e) => setQueryParams("sortBy", e.target.value as SortOptions)}
+        className="min-h-[44px] rounded-full border border-biobackup-navy/20 bg-surface px-4 py-2 text-sm font-medium text-biobackup-ink outline-none transition focus:border-biobackup-blue"
+      >
+        {sortOptions.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+    </label>
   )
 }
 

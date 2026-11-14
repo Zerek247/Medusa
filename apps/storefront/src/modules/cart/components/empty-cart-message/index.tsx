@@ -1,23 +1,23 @@
-import { Heading, Text } from "@modules/common/components/ui"
-
-import InteractiveLink from "@modules/common/components/interactive-link"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 const EmptyCartMessage = () => {
   return (
-    <div className="py-48 px-2 flex flex-col justify-center items-start" data-testid="empty-cart-message">
-      <Heading
-        level="h1"
-        className="flex flex-row text-3xl-regular gap-x-2 items-baseline"
+    <div
+      className="mx-auto max-w-2xl py-16 text-center"
+      data-testid="empty-cart-message"
+    >
+      <h1 className="text-2xl font-bold text-biobackup-ink">
+        Tu carrito está vacío
+      </h1>
+      <p className="mt-3 text-sm text-biobackup-ink/65">
+        Explora el catálogo y agrega lo que tu hospital necesita.
+      </p>
+      <LocalizedClientLink
+        href="/store"
+        className="mt-6 inline-flex min-h-[44px] items-center rounded-full bg-biobackup-navy px-6 py-3 text-sm font-semibold text-white"
       >
-        Cart
-      </Heading>
-      <Text className="text-base-regular mt-4 mb-6 max-w-[32rem]">
-        You don&apos;t have anything in your cart. Let&apos;s change that, use
-        the link below to start browsing our products.
-      </Text>
-      <div>
-        <InteractiveLink href="/store">Explore products</InteractiveLink>
-      </div>
+        Ir al catálogo
+      </LocalizedClientLink>
     </div>
   )
 }

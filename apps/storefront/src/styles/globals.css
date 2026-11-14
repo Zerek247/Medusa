@@ -2,27 +2,143 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-/* Fase 6: paleta sobria de equipo médico, en vez de la paleta por defecto
-   del preset de Medusa (pensada para un dashboard, no para una tienda).
+/* Paleta de la marca BioBackup sobre las variables de @medusajs/ui-preset.
    Solo se sobreescriben las variables de "interactivo" (botones primarios,
-   links, foco) -- son las que definen el color de marca; el resto de la
-   paleta (grises, texto, bordes, estados de error/éxito) se queda tal
-   cual la trae @medusajs/ui-preset porque ya es neutral y funciona bien.
-   Un teal apagado en vez de un azul/negro genérico: transmite clínico y
-   confiable sin caer en el verde-quirófano de cliché. */
+   links, foco) -- son las que definen el color de marca; el resto (grises,
+   texto, bordes, estados de error/éxito) se queda como lo trae el preset. */
 :root {
-  --fg-interactive: #0f6659;
-  --fg-interactive-hover: #0b4d43;
-  --bg-interactive: #0f6659;
-  --border-interactive: #0f6659;
-  --button-inverted: #0f6659;
-  --button-inverted-hover: #0b4d43;
-  --button-inverted-pressed: #073731;
-  --tag-blue-bg: #e6f2f0;
-  --tag-blue-bg-hover: #d3e8e4;
-  --tag-blue-text: #0f6659;
-  --tag-blue-border: #b7d9d3;
-  --tag-blue-icon: #0f6659;
+  --fg-interactive: #008fcd;
+  --fg-interactive-hover: #035088;
+  --bg-interactive: #035088;
+  --border-interactive: #008fcd;
+  --button-inverted: #035088;
+  --button-inverted-hover: #008fcd;
+  --button-inverted-pressed: #02365c;
+  --tag-blue-bg: #e6f4fb;
+  --tag-blue-bg-hover: #d3ecf8;
+  --tag-blue-text: #035088;
+  --tag-blue-border: #b7def2;
+  --tag-blue-icon: #035088;
+
+  /* Tema: lo leen surface / biobackup-paper / biobackup-ink (tailwind.config.js) */
+  --c-surface: 255 255 255;
+  --c-paper: 244 250 252;
+  --c-ink: 15 30 51;
+}
+
+.dark {
+  --c-surface: 18 33 48;
+  --c-paper: 14 26 38;
+  --c-ink: 230 240 247;
+  color-scheme: dark;
+
+  --fg-interactive: #4fb6e0;
+  --fg-interactive-hover: #8fd6f5;
+  --bg-interactive: #0e6fa5;
+  --border-interactive: #4fb6e0;
+  --button-inverted: #0e6fa5;
+  --button-inverted-hover: #008fcd;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: rgb(var(--c-ink));
+  background-color: rgb(var(--c-surface));
+}
+
+/* Títulos con Montserrat Alternates (variante de la familia Montserrat) */
+h1,
+h2 {
+  font-family: var(--font-montserrat-alt), var(--font-montserrat), sans-serif;
+}
+
+/* ---- Fondo de la tienda (no blanco): degradado con los colores de la marca ---- */
+.fondo-tienda {
+  background-color: #eef7fa;
+  background-image:
+    radial-gradient(ellipse 70% 50% at 8% 0%, rgba(162, 220, 240, 0.55), transparent 60%),
+    radial-gradient(ellipse 60% 45% at 100% 22%, rgba(95, 197, 168, 0.32), transparent 58%),
+    radial-gradient(ellipse 55% 40% at 0% 78%, rgba(0, 143, 205, 0.18), transparent 60%),
+    linear-gradient(180deg, #eaf5f9 0%, #f4fafb 45%, #e8f2f7 100%);
+  background-attachment: fixed;
+}
+
+.dark .fondo-tienda {
+  background-color: #08121c;
+  background-image:
+    radial-gradient(ellipse 70% 50% at 8% 0%, rgba(0, 143, 205, 0.28), transparent 60%),
+    radial-gradient(ellipse 60% 45% at 100% 24%, rgba(52, 190, 190, 0.2), transparent 58%),
+    radial-gradient(ellipse 55% 40% at 0% 80%, rgba(3, 80, 136, 0.38), transparent 60%),
+    linear-gradient(180deg, #08121c 0%, #0b1824 50%, #07101a 100%);
+}
+
+/* ---- Entrada suave del contenido (arranca justo cuando se va la pantalla de carga) ---- */
+.reveal {
+  animation: subir-suave 0.7s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
+  animation-delay: calc(1.05s + var(--d, 0) * 90ms);
+}
+
+/* Para listas que se vuelven a pintar al filtrar/buscar: sin la espera larga. */
+.reveal-rapido {
+  animation: subir-suave 0.45s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
+  animation-delay: calc(var(--d, 0) * 50ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-rapido {
+    animation: none;
+  }
+}
+
+/* ---- Texto con degradado de la marca ---- */
+.text-gradient {
+  background-image: linear-gradient(100deg, #035088 0%, #008fcd 50%, #34bebe 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.dark .text-gradient {
+  background-image: linear-gradient(100deg, #7fd0f2 0%, #4fc3f0 45%, #5fe0d0 100%);
+}
+
+/* ---- Solo dentro de la tienda ---- */
+.tienda-root .bg-biobackup-navy {
+  background-image: linear-gradient(100deg, #035088 0%, #0a73b4 50%, #008fcd 100%);
+  background-size: 200% 100%;
+  background-position: 0% 50%;
+  transition: background-position 0.5s ease, transform 0.2s ease, box-shadow 0.25s ease;
+}
+
+.tienda-root a.bg-biobackup-navy:hover,
+.tienda-root button.bg-biobackup-navy:not(:disabled):hover {
+  background-position: 100% 50%;
+  box-shadow: 0 10px 24px -10px rgba(0, 143, 205, 0.7);
+}
+
+.dark .tienda-root .text-biobackup-navy {
+  color: #8fd6f5;
+}
+
+/* Campos con altura táctil cómoda (textarea queda libre). */
+.tienda-root :is(input:not([type="checkbox"]):not([type="radio"]), select) {
+  min-height: 2.75rem;
+}
+
+/* ---- Panel del widget de WhatsApp (whatsapp-widget) ---- */
+@keyframes whatsapp-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 @layer utilities {

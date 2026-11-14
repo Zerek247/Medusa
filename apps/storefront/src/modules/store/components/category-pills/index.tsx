@@ -1,9 +1,13 @@
-// Pastillas de categoría en el catálogo (Fase 6) -- enlazan a
-// /categories/[handle], que ya filtra productos por categoría (Medusa lo
-// trae de fábrica); esto solo las hace visibles/navegables desde el
-// catálogo general en vez de tener que conocer la URL de memoria.
+// Pastillas de categoría en el catálogo -- enlazan a /categories/[handle],
+// que ya filtra productos por categoría (Medusa lo trae de fábrica).
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+
+const BASE =
+  "inline-flex min-h-[44px] items-center rounded-full border px-3.5 py-1.5 text-sm font-medium transition"
+const ACTIVA = "border-biobackup-navy bg-biobackup-navy text-white"
+const INACTIVA =
+  "border-biobackup-navy/20 text-biobackup-ink hover:border-biobackup-blue"
 
 const CategoryPills = ({
   categories,
@@ -16,14 +20,10 @@ const CategoryPills = ({
   if (principales.length === 0) return null
 
   return (
-    <div className="flex flex-wrap gap-2 mb-6" data-testid="category-pills">
+    <div className="flex flex-wrap gap-2" data-testid="category-pills">
       <LocalizedClientLink
         href="/store"
-        className={`px-3 py-1.5 rounded-full text-xs border ${
-          !activeHandle
-            ? "bg-ui-button-inverted text-white border-ui-button-inverted"
-            : "border-ui-border-base text-ui-fg-subtle hover:border-ui-border-interactive"
-        }`}
+        className={`${BASE} ${!activeHandle ? ACTIVA : INACTIVA}`}
       >
         Todos
       </LocalizedClientLink>
@@ -31,11 +31,7 @@ const CategoryPills = ({
         <LocalizedClientLink
           key={c.id}
           href={`/categories/${c.handle}`}
-          className={`px-3 py-1.5 rounded-full text-xs border ${
-            activeHandle === c.handle
-              ? "bg-ui-button-inverted text-white border-ui-button-inverted"
-              : "border-ui-border-base text-ui-fg-subtle hover:border-ui-border-interactive"
-          }`}
+          className={`${BASE} ${activeHandle === c.handle ? ACTIVA : INACTIVA}`}
         >
           {c.name}
         </LocalizedClientLink>

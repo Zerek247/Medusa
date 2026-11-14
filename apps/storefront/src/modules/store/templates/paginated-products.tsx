@@ -83,17 +83,29 @@ export default async function PaginatedProducts({
 
   return (
     <>
+      <p className="text-sm text-biobackup-ink/60">
+        {count} producto{count !== 1 && "s"}
+      </p>
       <ul
-        className="grid grid-cols-2 w-full small:grid-cols-3 medium:grid-cols-4 gap-x-6 gap-y-8"
+        className="mt-4 grid w-full grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
         data-testid="products-list"
       >
-        {products.map((p) => {
+        {products.map((p, i) => {
           return (
-            <li key={p.id}>
+            <li
+              key={p.id}
+              className="reveal-rapido"
+              style={{ ["--d" as string]: i % 8 }}
+            >
               <ProductPreview product={p} region={region} />
             </li>
           )
         })}
+        {products.length === 0 && (
+          <li className="col-span-full py-12 text-center text-sm text-biobackup-ink/50">
+            No encontramos productos que coincidan con tu búsqueda.
+          </li>
+        )}
       </ul>
       {totalPages > 1 && (
         <Pagination

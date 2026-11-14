@@ -6,6 +6,7 @@ import ProductTabs from "@modules/products/components/product-tabs"
 import RelatedProducts from "@modules/products/components/related-products"
 import ProductInfo from "@modules/products/templates/product-info"
 import SkeletonRelatedProducts from "@modules/skeletons/templates/skeleton-related-products"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { notFound } from "next/navigation"
 import { HttpTypes } from "@medusajs/types"
 
@@ -26,35 +27,56 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
     return notFound()
   }
 
+  const categoria = product.categories?.[0]
+
   return (
     <>
       <div
-        className="content-container  flex flex-col small:flex-row small:items-start py-6 relative"
+        className="mx-auto max-w-6xl px-4 py-8 sm:px-6"
         data-testid="product-container"
       >
-        <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-[300px] w-full py-8 gap-y-6">
-          <ProductInfo product={product} />
-          <ProductTabs product={product} />
-        </div>
-        <div className="block w-full relative">
-          <ImageGallery images={images} />
-        </div>
-        <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-[300px] w-full py-8 gap-y-12">
-          {/*
-            OJO: se quitó el <Suspense><ProductActionsWrapper/></Suspense>
-            original del starter. En este entorno (Next.js 15.5.21 +
-            Turbopack, dev mode) ese boundary de Suspense se queda
-            atascado y el contenido real nunca reemplaza al fallback --
-            el botón de "Agregar al carrito" queda permanentemente inerte
-            aunque el HTML se vea bien. `product` (con precios ya
-            calculados para la región) llega completo desde la página, así
-            que usamos ProductActions directo, sin el segundo fetch/Suspense.
-          */}
-          <ProductActions product={product} region={region} />
+        <p className="text-sm text-biobackup-ink/50">
+          <LocalizedClientLink href="/store" className="hover:text-biobackup-blue">
+            Catálogo
+          </LocalizedClientLink>
+          {categoria && (
+            <>
+              {" "}
+              /{" "}
+              <LocalizedClientLink
+                href={`/categories/${categoria.handle}`}
+                className="hover:text-biobackup-blue"
+              >
+                {categoria.name}
+              </LocalizedClientLink>
+            </>
+          )}
+        </p>
+
+        <div className="mt-4 grid gap-8 rounded-[2rem] border border-white/70 bg-surface/80 p-4 shadow-[0_20px_60px_-28px_rgba(3,80,136,0.5)] backdrop-blur dark:border-white/10 sm:p-7 md:grid-cols-2">
+          <ImageGallery images={images} seed={product.handle} />
+
+          <div className="flex flex-col gap-y-6">
+            <ProductInfo product={product} />
+            {/*
+              OJO: se quitó el <Suspense><ProductActionsWrapper/></Suspense>
+              original del starter. En este entorno (Next.js 15.5.21 +
+              Turbopack, dev mode) ese boundary de Suspense se queda
+              atascado y el contenido real nunca reemplaza al fallback --
+              el botón de "Agregar al carrito" queda permanentemente inerte
+              aunque el HTML se vea bien. `product` (con precios ya
+              calculados para la región) llega completo desde la página, así
+              que usamos ProductActions directo, sin el segundo fetch/Suspense.
+            */}
+            <ProductActions product={product} region={region} />
+            <div className="border-t border-biobackup-navy/10 pt-6">
+              <ProductTabs product={product} />
+            </div>
+          </div>
         </div>
       </div>
       <div
-        className="content-container my-16 small:my-32"
+        className="mx-auto max-w-6xl px-4 pb-4 pt-8 sm:px-6"
         data-testid="related-products-container"
       >
         <Suspense fallback={<SkeletonRelatedProducts />}>
