@@ -13,6 +13,15 @@ export async function tareaTimbrarCfdi(container: MedusaContainer, orderId: stri
   const tarea = TAREAS.TIMBRAR_CFDI;
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
 
+  // La facturación (CFDI) no está integrada todavía: el timbrado es opt-in.
+  // Con un PAC real cada timbrado cuesta dinero y tiene valor fiscal, así que
+  // no debe correr solo. Se activa con POST_PAGO_TIMBRAR_CFDI=true.
+  if (process.env.POST_PAGO_TIMBRAR_CFDI !== "true") {
+    await job.log("Timbrado de CFDI desactivado (POST_PAGO_TIMBRAR_CFDI != true) -- se omite.");
+    logger.info(`[post-pago:${tarea}] orden ${orderId}: timbrado de CFDI desactivado, se omite.`);
+    return;
+  }
+
   const yaHecho = await yaSeCompleto<{ uuid: string }>(orderId, tarea);
   if (yaHecho) {
     await job.log(`Ya se había timbrado esta orden antes (UUID ${yaHecho.uuid}) -- se omite, NO se timbra dos veces.`);
