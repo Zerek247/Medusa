@@ -75,7 +75,8 @@ export const listProducts = async ({
         },
         headers,
         next,
-        cache: "force-cache",
+        // Con sesión, el precio depende del grupo del cliente: no se guarda en caché.
+        cache: "authorization" in headers ? "no-store" : "force-cache",
       }
     )
     .then(({ products, count }) => {

@@ -1,3 +1,4 @@
+import { haySesion } from "@lib/data/sesion"
 import { getProductPrice } from "@lib/util/get-product-price"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
@@ -17,6 +18,8 @@ export default async function ProductPreview({
   const { cheapestPrice } = getProductPrice({
     product,
   })
+  // Sin sesión no se ven precios (clientes con precios especiales).
+  const sesion = await haySesion()
 
   const categoria = product.categories?.[0]?.name
   const variante = product.variants?.[0]
@@ -61,20 +64,36 @@ export default async function ProductPreview({
         </p>
         <div className="mt-3 flex items-center justify-between gap-2">
           <span className="flex flex-col leading-tight">
-            {cheapestPrice?.price_type === "sale" && (
+            {!sesion ? (
               <span
-                className="text-xs text-biobackup-ink/45 line-through"
-                data-testid="original-price"
+                className="text-xs font-semibold text-biobackup-blue"
+                data-testid="price-login"
               >
-                {cheapestPrice.original_price}
+                Inicia sesión para ver precio
               </span>
-            )}
-            {cheapestPrice && (
+            ) : cheapestPrice ? (
+              <>
+                {cheapestPrice.price_type === "sale" && (
+                  <span
+                    className="text-xs text-biobackup-ink/45 line-through"
+                    data-testid="original-price"
+                  >
+                    {cheapestPrice.original_price}
+                  </span>
+                )}
+                <span
+                  className="text-gradient text-lg font-extrabold"
+                  data-testid="price"
+                >
+                  {cheapestPrice.calculated_price}
+                </span>
+              </>
+            ) : (
               <span
-                className="text-gradient text-lg font-extrabold"
-                data-testid="price"
+                className="text-sm font-bold text-biobackup-ink/70"
+                data-testid="price-quote"
               >
-                {cheapestPrice.calculated_price}
+                Precio por cotizar
               </span>
             )}
           </span>

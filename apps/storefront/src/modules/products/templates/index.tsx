@@ -15,6 +15,7 @@ type ProductTemplateProps = {
   region: HttpTypes.StoreRegion
   countryCode: string
   images: HttpTypes.StoreProductImage[]
+  sesion: boolean
 }
 
 const ProductTemplate: React.FC<ProductTemplateProps> = ({
@@ -22,6 +23,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
   region,
   countryCode,
   images,
+  sesion,
 }) => {
   if (!product || !product.id) {
     return notFound()
@@ -68,7 +70,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
               calculados para la región) llega completo desde la página, así
               que usamos ProductActions directo, sin el segundo fetch/Suspense.
             */}
-            <ProductActions product={product} region={region} />
+            <ProductActions product={product} region={region} sesion={sesion} />
             <div className="border-t border-biobackup-navy/10 pt-6">
               <ProductTabs product={product} />
             </div>

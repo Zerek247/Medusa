@@ -1,5 +1,6 @@
 import { OptionValueIds } from "@lib/util/product-option-filters"
 import { listCategories } from "@lib/data/categories"
+import { haySesion } from "@lib/data/sesion"
 import RefinementList from "@modules/store/components/refinement-list"
 import SearchBar from "@modules/store/components/search-bar"
 import CategoryPills from "@modules/store/components/category-pills"
@@ -23,6 +24,7 @@ const StoreTemplate = async ({
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
   const categories = await listCategories()
+  const sesion = await haySesion()
 
   return (
     <div
@@ -43,7 +45,7 @@ const StoreTemplate = async ({
           <SearchBar />
           {/* hideOptionsPicker: nuestro catálogo no tiene variantes por
               talla/color (cada producto usa una sola opción "Default"). */}
-          <RefinementList sortBy={sort} hideOptionsPicker />
+          <RefinementList sortBy={sort} hideOptionsPicker conPrecios={sesion} />
         </div>
       </div>
 

@@ -9,6 +9,9 @@ import { isEqual } from "lodash"
 import { useParams, usePathname, useSearchParams } from "next/navigation"
 import { useEffect, useMemo, useRef, useState } from "react"
 import ProductPrice from "../product-price"
+import { getProductPrice } from "@lib/util/get-product-price"
+import { enlaceCotizacion } from "@lib/tienda"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import MobileActions from "./mobile-actions"
 import { useRouter } from "next/navigation"
 
@@ -16,6 +19,8 @@ type ProductActionsProps = {
   product: HttpTypes.StoreProduct
   region: HttpTypes.StoreRegion
   disabled?: boolean
+  // ¿Hay un cliente con sesión? Sin sesión no se muestran precios ni se compra.
+  sesion: boolean
 }
 
 const optionsAsKeymap = (
@@ -30,6 +35,7 @@ const optionsAsKeymap = (
 export default function ProductActions({
   product,
   disabled,
+  sesion,
 }: ProductActionsProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -135,6 +141,61 @@ export default function ProductActions({
     setIsAdding(false)
     setAgregado(true)
     setTimeout(() => setAgregado(false), 1800)
+  }
+
+  const hayPrecio = !!(
+    getProductPrice({ product, variantId: selectedVariant?.id }).variantPrice ??
+    getProductPrice({ product }).cheapestPrice
+  )
+
+  // Sin sesión: no se ven precios ni se compra (clientes con precios por grupo).
+  if (!sesion) {
+    return (
+      <div
+        className="rounded-2xl border border-biobackup-blue/25 bg-biobackup-blue/5 p-5"
+        data-testid="aviso-iniciar-sesion"
+      >
+        <p className="text-sm font-extrabold text-biobackup-ink">
+          Inicia sesión para ver precios y comprar
+        </p>
+        <p className="mt-1 text-sm text-biobackup-ink/65">
+          Los precios dependen de tu cuenta. Crea una cuenta gratis o inicia
+          sesión para ver el precio de este producto.
+        </p>
+        <LocalizedClientLink
+          href="/account"
+          className="mt-4 inline-flex min-h-[44px] items-center rounded-full bg-biobackup-navy px-6 py-3 text-sm font-semibold text-white"
+        >
+          Iniciar sesión o crear cuenta
+        </LocalizedClientLink>
+      </div>
+    )
+  }
+
+  // Con sesión pero sin precio capturado: se cotiza por WhatsApp.
+  if (!hayPrecio) {
+    return (
+      <div
+        className="rounded-2xl border border-biobackup-navy/10 bg-surface p-5"
+        data-testid="aviso-por-cotizar"
+      >
+        <p className="text-2xl font-extrabold text-biobackup-ink">
+          Precio por cotizar
+        </p>
+        <p className="mt-1 text-sm text-biobackup-ink/65">
+          Escríbenos y te enviamos tu precio.
+        </p>
+        <a
+          href={enlaceCotizacion(product.title, selectedVariant?.sku ?? product.variants?.[0]?.sku)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 inline-flex min-h-[44px] items-center rounded-full bg-emerald-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-600"
+          data-testid="solicitar-cotizacion"
+        >
+          Solicitar cotización por WhatsApp
+        </a>
+      </div>
+    )
   }
 
   return (

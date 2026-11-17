@@ -8,6 +8,7 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import { HttpTypes } from "@medusajs/types"
 import { OptionValueIds } from "@lib/util/product-option-filters"
 import { listCategories } from "@lib/data/categories"
+import { haySesion } from "@lib/data/sesion"
 
 export default async function CategoryTemplate({
   category,
@@ -25,6 +26,7 @@ export default async function CategoryTemplate({
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
   const todasLasCategorias = await listCategories()
+  const sesion = await haySesion()
 
   if (!category || !countryCode) notFound()
 
@@ -75,6 +77,7 @@ export default async function CategoryTemplate({
           sortBy={sort}
           data-testid="sort-by-container"
           hideOptionsPicker
+          conPrecios={sesion}
         />
       </div>
 
