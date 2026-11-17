@@ -31,6 +31,11 @@ export const getPricesForVariant = (variant: VariantWithPrice) => {
     }),
     currency_code: variant.calculated_price.currency_code,
     price_type: variant.calculated_price.calculated_price.price_list_type,
+    // Descuento = el precio que le toca al cliente es menor al precio de lista
+    // (oferta, o precio de su grupo de clientes).
+    con_descuento:
+      variant.calculated_price.calculated_amount <
+      variant.calculated_price.original_amount,
     percentage_diff: getPercentageDiff(
       variant.calculated_price.original_amount,
       variant.calculated_price.calculated_amount

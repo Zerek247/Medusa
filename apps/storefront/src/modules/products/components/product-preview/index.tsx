@@ -73,7 +73,7 @@ export default async function ProductPreview({
               </span>
             ) : cheapestPrice ? (
               <>
-                {cheapestPrice.price_type === "sale" && (
+                {cheapestPrice.con_descuento && (
                   <span
                     className="text-xs text-biobackup-ink/45 line-through"
                     data-testid="original-price"
@@ -87,6 +87,11 @@ export default async function ProductPreview({
                 >
                   {cheapestPrice.calculated_price}
                 </span>
+                {cheapestPrice.con_descuento && (
+                  <span className="mt-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-600">
+                    Precio especial
+                  </span>
+                )}
               </>
             ) : (
               <span

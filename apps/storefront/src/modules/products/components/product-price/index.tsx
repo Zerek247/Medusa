@@ -23,6 +23,11 @@ export default function ProductPrice({
 
   return (
     <div className="flex flex-col">
+      {selectedPrice.con_descuento && (
+        <span className="mb-1 inline-flex w-fit items-center rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-300">
+          Precio especial para ti
+        </span>
+      )}
       <span className="text-gradient text-4xl font-extrabold">
         {!variant && (product.variants?.length ?? 0) > 1 && (
           <span className="mr-1 text-base font-semibold">Desde</span>
@@ -34,7 +39,7 @@ export default function ProductPrice({
           {selectedPrice.calculated_price}
         </span>
       </span>
-      {selectedPrice.price_type === "sale" && (
+      {selectedPrice.con_descuento && (
         <p className="mt-1 text-sm">
           <span className="text-biobackup-ink/50">Antes: </span>
           <span

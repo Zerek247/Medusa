@@ -91,7 +91,7 @@ export default async function demoPreciosYClientes({ container }: ExecArgs) {
             title: TITULO_LISTA,
             description: "Precio de ejemplo para clientes especiales (demostración).",
             status: "active" as any,
-            type: "override" as any,
+            type: "sale" as any,
             rules: { "customer.groups.id": [grupoId] },
             prices: conPrecio.map(({ variantId, precio }) => ({
               variant_id: variantId,
