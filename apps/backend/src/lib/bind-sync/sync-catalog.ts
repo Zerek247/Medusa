@@ -18,20 +18,46 @@
 //
 // Esta es la razón por la que el código de creación y el de actualización
 // mandan campos distintos a Medusa -- no es un descuido, es la política.
+//
+// ACTUALIZACIÓN DE LA POLÍTICA (Bind real): Bind es de SOLO LECTURA para esta
+// integración, y los PRECIOS ya no vienen de Bind -- los maneja el equipo en
+// el panel de Medusa (precio base + listas de precios por grupo de clientes).
+// Por eso este sync nunca escribe precios (salvo BIND_SYNC_PRECIOS=true, que
+// existe solo para el mock), y por defecto publica únicamente los productos
+// con existencia (BIND_SYNC_SOLO_CON_EXISTENCIA).
 import { Logger, MedusaContainer } from "@medusajs/framework/types";
 import { ContainerRegistrationKeys, ProductStatus } from "@medusajs/framework/utils";
 import {
   createInventoryLevelsWorkflow,
+  createProductCategoriesWorkflow,
   createProductsWorkflow,
   updateInventoryLevelsWorkflow,
   updateProductsWorkflow,
   updateProductVariantsWorkflow,
   updateStoresWorkflow,
 } from "@medusajs/medusa/core-flows";
-import { obtenerCatalogoBind, ProductoBind } from "./bind-client";
+import { CategoriaBind, obtenerCatalogoBind, obtenerCategoriasBind, ProductoBind } from "./bind-client";
 import { registrarEnBitacora } from "./bitacora";
 
 const MONEDA_BIND = "mxn";
+
+// Los precios NO se escriben desde Bind salvo que se pida explícitamente.
+const SYNC_PRECIOS = process.env.BIND_SYNC_PRECIOS === "true";
+// Importar las fotos de Bind (URLs de su almacenamiento) al crear productos.
+const SYNC_IMAGENES = process.env.BIND_SYNC_IMAGENES === "true";
+// Publicar solo productos con existencia (los que ya están en Medusa se
+// siguen actualizando aunque lleguen a 0, para que su existencia no quede vieja).
+const SOLO_CON_EXISTENCIA = process.env.BIND_SYNC_SOLO_CON_EXISTENCIA !== "false";
+
+function slug(texto: string): string {
+  return texto
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 100);
+}
 
 function esperar(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -173,17 +199,22 @@ async function obtenerVariantesExistentes(
   const mapa = new Map<string, VariantExistente>();
   if (skus.length === 0) return mapa;
 
-  const { data } = await query.graph({
-    entity: "product_variant",
-    fields: [
-      "id",
-      "sku",
-      "product_id",
-      "inventory_items.inventory_item_id",
-      "inventory_items.inventory.location_levels.location_id",
-    ],
-    filters: { sku: skus },
-  });
+  // Por tandas de 500: con miles de códigos en un solo filtro la consulta es enorme.
+  const data: any[] = [];
+  for (let i = 0; i < skus.length; i += 500) {
+    const { data: tanda } = await query.graph({
+      entity: "product_variant",
+      fields: [
+        "id",
+        "sku",
+        "product_id",
+        "inventory_items.inventory_item_id",
+        "inventory_items.inventory.location_levels.location_id",
+      ],
+      filters: { sku: skus.slice(i, i + 500) },
+    });
+    data.push(...tanda);
+  }
 
   for (const variant of data) {
     if (!variant.sku) continue;
@@ -197,6 +228,77 @@ async function obtenerVariantesExistentes(
     });
   }
   return mapa;
+}
+
+/**
+ * Asegura que existan en Medusa las categorías de Bind que usan los
+ * productos a sincronizar (más sus padres). Devuelve bindId -> id de Medusa.
+ * Solo se crean las que se usan, para no llenar la tienda de categorías
+ * vacías. Una categoría ya existente se reconoce por metadata.bind_id (o, si
+ * es de antes, por su handle) y NO se modifica.
+ */
+async function asegurarCategorias(
+  container: MedusaContainer,
+  categoriasBind: CategoriaBind[],
+  productos: ProductoBind[],
+  logger: Logger
+): Promise<Map<string, string>> {
+  const resultado = new Map<string, string>();
+  const porId = new Map(categoriasBind.map((c) => [c.id, c]));
+
+  const necesarias = new Set<string>();
+  for (const p of productos) {
+    let actual = p.categoria_bind_id ? porId.get(p.categoria_bind_id) : undefined;
+    while (actual) {
+      necesarias.add(actual.id);
+      actual = actual.padre_id ? porId.get(actual.padre_id) : undefined;
+    }
+  }
+  if (necesarias.size === 0) return resultado;
+
+  const query = container.resolve(ContainerRegistrationKeys.QUERY);
+  const { data: existentes } = await query.graph({
+    entity: "product_category",
+    fields: ["id", "handle", "metadata"],
+  });
+  const porBindId = new Map<string, string>();
+  const porHandle = new Map<string, string>();
+  for (const c of existentes as any[]) {
+    if (c.metadata?.bind_id) porBindId.set(String(c.metadata.bind_id), c.id);
+    porHandle.set(c.handle, c.id);
+  }
+
+  // Padres antes que hijos: ordenamos por profundidad.
+  const profundidad = (c: CategoriaBind): number => (c.padre_id && porId.get(c.padre_id) ? 1 + profundidad(porId.get(c.padre_id)!) : 0);
+  const pendientes = categoriasBind
+    .filter((c) => necesarias.has(c.id))
+    .sort((a, b) => profundidad(a) - profundidad(b));
+
+  for (const cat of pendientes) {
+    const handle = slug(cat.nombre) || `categoria-${cat.id.slice(0, 6)}`;
+    const yaExiste = porBindId.get(cat.id) || porHandle.get(handle);
+    if (yaExiste) {
+      resultado.set(cat.id, yaExiste);
+      continue;
+    }
+    const { result } = await createProductCategoriesWorkflow(container).run({
+      input: {
+        product_categories: [
+          {
+            name: cat.nombre,
+            handle,
+            is_active: true,
+            parent_category_id: cat.padre_id ? resultado.get(cat.padre_id) : undefined,
+            metadata: { bind_id: cat.id },
+          },
+        ],
+      },
+    });
+    resultado.set(cat.id, result[0].id);
+    porHandle.set(handle, result[0].id);
+    logger.info(`[bind-sync] Categoría creada: ${cat.nombre}`);
+  }
+  return resultado;
 }
 
 export async function syncBindCatalog(
@@ -222,12 +324,27 @@ export async function syncBindCatalog(
   await asegurarMonedaMxn(container, logger);
   const { salesChannelId, stockLocationId, shippingProfileId } = await obtenerDatosDefault(container);
 
-  const catalogoBind = await obtenerCatalogoBind(logger);
-  resumen.total_productos_bind = catalogoBind.length;
-  logger.info(`[bind-sync] ${catalogoBind.length} productos obtenidos de Bind ERP.`);
+  const [todosBind, categoriasBind] = await Promise.all([
+    obtenerCatalogoBind(logger),
+    obtenerCategoriasBind(logger),
+  ]);
+  resumen.total_productos_bind = todosBind.length;
+  logger.info(`[bind-sync] ${todosBind.length} productos obtenidos de Bind ERP (solo lectura).`);
 
-  const skus = catalogoBind.map((p) => p.sku);
-  const existentes = await obtenerVariantesExistentes(container, skus, stockLocationId);
+  const existentes = await obtenerVariantesExistentes(
+    container,
+    todosBind.map((p) => p.sku),
+    stockLocationId
+  );
+
+  // Qué se sincroniza: los que tienen existencia y, aunque lleguen a 0, los
+  // que ya están en Medusa (para actualizar su existencia).
+  const catalogoBind = SOLO_CON_EXISTENCIA
+    ? todosBind.filter((p) => p.existencia > 0 || existentes.has(p.sku))
+    : todosBind;
+  logger.info(`[bind-sync] Se sincronizan ${catalogoBind.length} de ${todosBind.length} (solo con existencia: ${SOLO_CON_EXISTENCIA}).`);
+
+  const categoriaMedusaPorBindId = await asegurarCategorias(container, categoriasBind, catalogoBind, logger);
 
   // Procesamos SECUENCIALMENTE (no en un solo batch) a propósito: si
   // agrupáramos los 60 en una sola llamada a createProductsWorkflow y UNO
@@ -245,11 +362,13 @@ export async function syncBindCatalog(
         await actualizarProducto(container, producto, existente, flagEnvio, stockLocationId);
         resumen.actualizados += 1;
       } else {
-        await crearProducto(container, producto, flagEnvio, {
-          salesChannelId,
-          stockLocationId,
-          shippingProfileId,
-        });
+        await crearProducto(
+          container,
+          producto,
+          flagEnvio,
+          { salesChannelId, stockLocationId, shippingProfileId },
+          producto.categoria_bind_id ? categoriaMedusaPorBindId.get(producto.categoria_bind_id) : undefined
+        );
         resumen.creados += 1;
       }
     } catch (error) {
@@ -284,16 +403,20 @@ async function actualizarProducto(
   flagEnvio: boolean,
   stockLocationId: string
 ) {
-  await updateProductVariantsWorkflow(container).run({
-    input: {
-      product_variants: [
-        {
-          id: existente.variantId,
-          prices: [{ currency_code: MONEDA_BIND, amount: producto.precio }],
-        },
-      ],
-    },
-  });
+  // Los precios los maneja el panel de Medusa: solo se escriben si se pide
+  // explícitamente (BIND_SYNC_PRECIOS=true) y Bind manda un precio.
+  if (SYNC_PRECIOS && producto.precio != null) {
+    await updateProductVariantsWorkflow(container).run({
+      input: {
+        product_variants: [
+          {
+            id: existente.variantId,
+            prices: [{ currency_code: MONEDA_BIND, amount: producto.precio }],
+          },
+        ],
+      },
+    });
+  }
 
   if (existente.inventoryItemId) {
     const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
@@ -375,18 +498,27 @@ async function crearProducto(
   container: MedusaContainer,
   producto: ProductoBind,
   flagEnvio: boolean,
-  datosDefault: DatosDefault
+  datosDefault: DatosDefault,
+  categoriaId?: string
 ) {
   await createProductsWorkflow(container).run({
     input: {
       products: [
         {
           title: producto.nombre,
-          description: producto.descripcion,
+          // Handle explícito: en Bind hay varios productos con el mismo
+          // título (ej. "PINZA"); sin esto Medusa generaría handles repetidos.
+          handle: `${slug(producto.nombre)}-${slug(producto.sku)}`.slice(0, 120),
+          description: producto.descripcion || undefined,
           status: ProductStatus.PUBLISHED,
+          ...(categoriaId ? { categories: [{ id: categoriaId }] } : {}),
+          ...(SYNC_IMAGENES && producto.imagen_url
+            ? { thumbnail: producto.imagen_url, images: [{ url: producto.imagen_url }] }
+            : {}),
           metadata: {
             requiere_datos_envio: flagEnvio,
             bind_sku: producto.sku,
+            bind_unidad: producto.unidad,
             // Ver el comentario en actualizarProducto sobre por qué se
             // guarda esto (Fase 5: registrar_venta_en_bind lo necesita).
             bind_id: producto.id,
@@ -400,7 +532,12 @@ async function crearProducto(
               sku: producto.sku,
               manage_inventory: true,
               options: { Default: "Default" },
-              prices: [{ currency_code: MONEDA_BIND, amount: producto.precio }],
+              // Sin precio hasta que el equipo lo capture en el panel (y
+              // mientras tanto la tienda muestra "Precio por cotizar").
+              prices:
+                SYNC_PRECIOS && producto.precio != null
+                  ? [{ currency_code: MONEDA_BIND, amount: producto.precio }]
+                  : [],
               weight: producto.peso_kg ?? undefined,
               length: producto.largo_cm ?? undefined,
               width: producto.ancho_cm ?? undefined,

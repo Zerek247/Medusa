@@ -14,6 +14,16 @@ export async function tareaRegistrarVentaBind(container: MedusaContainer, orderI
   const tarea = TAREAS.REGISTRAR_VENTA_BIND;
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
 
+  // SEGURIDAD: esta tarea ESCRIBE en Bind (POST de una venta que descuenta
+  // existencia). Con Bind real eso afectaría el inventario y las ventas
+  // reales del negocio, así que es opt-in: solo corre con
+  // POST_PAGO_REGISTRAR_VENTA_BIND=true. Mientras tanto, Bind solo se LEE.
+  if (process.env.POST_PAGO_REGISTRAR_VENTA_BIND !== "true") {
+    await job.log("Registro de ventas en Bind desactivado (POST_PAGO_REGISTRAR_VENTA_BIND != true) -- se omite.");
+    logger.info(`[post-pago:${tarea}] orden ${orderId}: registro de venta en Bind desactivado, se omite.`);
+    return;
+  }
+
   const yaHecho = await yaSeCompleto<{ folio: string }>(orderId, tarea);
   if (yaHecho) {
     await job.log(`Ya se había registrado esta venta en Bind antes (folio ${yaHecho.folio}) -- se omite, no se vuelve a llamar a Bind.`);
