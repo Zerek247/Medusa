@@ -153,7 +153,9 @@ module.exports = defineConfig({
       return {
         server: {
           host: "0.0.0.0",
-          allowedHosts: ["localhost", ".localhost", "127.0.0.1"],
+          // ".trycloudflare.com": para mostrar el panel por el tunel temporal de la demo
+          // (scripts/demo-tunel.ps1 -ConPanel); sin esto Vite rechaza el host.
+          allowedHosts: ["localhost", ".localhost", "127.0.0.1", ".trycloudflare.com"],
           hmr: {
             port: 5173,
             clientPort: 5173,

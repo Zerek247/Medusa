@@ -39,3 +39,6 @@ docker-data/
 # texto en vez de mandarlos de verdad. Viven dentro de apps/backend/.medusa/
 # (ya cubierto por la regla .medusa/ de arriba) a propósito -- ver el
 # comentario en apps/backend/src/lib/mock-correo.ts.
+
+# Credenciales locales de la demo (las genera scripts/demo-tunel.ps1). NUNCA subir.
+scripts/*.local.txt
